@@ -1,0 +1,20 @@
+export default function Admin() {
+    return (
+        <div>
+
+            <h1>Admin</h1>
+            <ul>
+                <li>
+                    <a href="admin/create">
+                        Crea
+                    </a>
+                </li>
+                <li>
+                    <a href="admin/update">
+                        Inserisci risultati
+                    </a>
+                </li>
+            </ul>
+        </div>
+    )
+}
