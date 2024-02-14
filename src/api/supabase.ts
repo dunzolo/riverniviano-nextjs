@@ -1,3 +1,5 @@
+import { Days } from "@/models/Days";
+import { Match } from "@/models/Match";
 import supabase from "@/supabase/supabase"
 
 export const getAllSquads = async () => {
@@ -19,7 +21,7 @@ export const getAllCategories = async () => {
 
 }
 
-export const getAllDays = async () => {
+export const getAllDays = async (): Promise<Days> => {
     const response = await supabase.from('match').select('day');
 
     // Recupera le singole categorie dalla risposta della query e rimuovi i duplicati
@@ -55,12 +57,13 @@ export const createMatch = async (date: string, hour: string, selectedSquadHome:
         ]);
 }
 
-export const getMatchesByDate = async (date: string) => {
+export const getMatchesByDate = async (date: string): Promise<Match> => {
 
     const response = await supabase
         .from('match')
-        .select('*')
-        .eq('day', date);
+        .select('*, squad_home(*), squad_away(*)')
+        .eq('day', date)
+        .order('id', { ascending: true });
 
     return response.data ?? [];
 }
