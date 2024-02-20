@@ -1,10 +1,11 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { createMatch, getAllCategories, getAllSquadsByCategory } from "@/api/supabase";
 import { GetServerSideProps } from "next";
-import { Category } from "@/models/category";
+import { MatchDatum } from "@/models/Match";
+import { Squad } from "@/models/Squad";
 
 type Props = {
-    categories: any
+    categories: string[]
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
@@ -23,74 +24,102 @@ export const getServerSideProps: GetServerSideProps = async () => {
 };
 
 export default function Create({ categories }: Props) {
-    const [date, setDate] = useState('');
-    const [hour, setHour] = useState('');
-    const [selectedSquadHome, setSelectedSquadHome] = useState('');
-    const [selectedSquadAway, setSelectedSquadAway] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState('');
-    const [subcategories, setSubcategories] = useState<Category[]>([]);
-    const [field, setField] = useState('');
 
-    async function handleSubmitMatch(e: any) {
-        e.preventDefault();
-        await createMatch(date, hour, selectedSquadHome, selectedSquadAway, field)
+    const [selectedCategory, setSelectedCategory] = useState('');
+    const [subcategories, setSubcategories] = useState<Squad[]>([]);
+
+    const [form, setForm] = useState<MatchDatum>({
+        id: "",
+        created_at: "",
+        day: "",
+        hour: "",
+        squad_home: {
+            id: "",
+            name: "",
+            logo: "",
+            group: "",
+            category: "",
+            created_at: ""
+        },
+        squad_away: {
+            id: "",
+            name: "",
+            logo: "",
+            group: "",
+            category: "",
+            created_at: ""
+        },
+        outcome: "",
+        score_home: "",
+        score_away: "",
+        field: ""
+    })
+
+    async function handleSubmitMatch(event: React.FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+
+        const { day, hour, squad_home, squad_away, field } = form;
+        await createMatch(day, hour, squad_home.id, squad_away.id, field)
     }
 
-    const handleSelectCategory = async (e: any) => {
-        const category = e.target.value;
+    const handleSelectCategory = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const category = event.target.value;
         setSelectedCategory(category);
 
         const data = await getAllSquadsByCategory(category);
         setSubcategories(data);
     };
 
-    const handleSelectField = async (e: any) => {
-        const category = e.target.value;
-        setField(category);
-    };
+    const handleChangeInput = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = event.target;
+        setForm({ ...form, [name]: value })
+    }
 
-    const handleSelectedSquadHome = async (e: any) => {
-        setSelectedSquadHome(e.target.value);
-    };
+    const handleChangeSelectField = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const { name, value } = event.target;
+        setForm({ ...form, [name]: value })
+    }
 
-    const handleSelectedSquadAway = async (e: any) => {
-        setSelectedSquadAway(e.target.value);
-    };
+    const handleChangeSelect = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const { name, value } = event.target;
+        setForm({ ...form, [name]: { id: value } })
+    }
 
     return (
         <div>
             <h1>Crea Match</h1>
             <pre>{JSON.stringify(categories, null, 2)}</pre>
-            <form action="" onSubmit={(e) => handleSubmitMatch(e)}>
+
+            <select value={selectedCategory} onChange={handleSelectCategory}>
+                <option value="">Seleziona una categoria</option>
+                {
+                    categories.map(category => {
+                        return (
+                            <option key={category} value={category}>{category}</option>
+                        )
+                    })
+                }
+            </select>
+
+            <form action="" onSubmit={handleSubmitMatch}>
                 <div>
-                    <select value={selectedCategory} onChange={handleSelectCategory}>
-                        <option value="">Seleziona una categoria</option>
-                        {
-                            categories.map(category => {
-                                return (
-                                    <option key={category} value={category}>{category}</option>
-                                )
-                            })
-                        }
-                    </select>
-                    <input placeholder="Data" type="date" value={date || ''} onChange={(e: any) => setDate(e.target.value)} />
-                    <input placeholder="Orario" type="time" value={hour || ''} onChange={(e: any) => setHour(e.target.value)} />
-                    <select value={field} onChange={handleSelectField}>
+                    <input type="date" name="day" value={form.day} onChange={handleChangeInput} />
+                    <input type="time" name="hour" value={form.hour} onChange={handleChangeInput} />
+                    <select name="field" value={form.field} onChange={handleChangeSelectField}>
                         <option value="Campo 1">Campo 1</option>
                         <option value="Campo 2">Campo 2</option>
-
                     </select>
                 </div>
 
                 <div>
-                    <select value={selectedSquadHome} onChange={handleSelectedSquadHome}>
+                    <select name="squad_home" value={form.squad_home.id} onChange={handleChangeSelect}>
                         <option value="">Seleziona una subcategoria</option>
                         {subcategories.map((subcategory, index) => (
                             <option key={index} value={subcategory.id}>{subcategory.name}</option>
                         ))}
                     </select>
 
-                    <select value={selectedSquadAway} onChange={handleSelectedSquadAway}>
+                    <select name="squad_away" value={form.squad_away.id} onChange={handleChangeSelect}>
                         <option value="">Seleziona una subcategoria</option>
                         {subcategories.map((subcategory, index) => (
                             <option key={index} value={subcategory.id}>{subcategory.name}</option>

@@ -1,7 +1,8 @@
+import { dateFormat } from '../utils/utils';
 export type Match = MatchDatum[]
 
 export interface MatchDatum {
-    id: number
+    id: string
     created_at: string
     day: string
     squad_home: SquadHome
@@ -14,7 +15,7 @@ export interface MatchDatum {
 }
 
 export interface SquadHome {
-    id: number
+    id: string
     logo: string
     name: string
     group: string
@@ -23,7 +24,7 @@ export interface SquadHome {
 }
 
 export interface SquadAway {
-    id: number
+    id: string
     logo: string
     name: string
     group: string

@@ -14,6 +14,11 @@ export default function Admin() {
                         Inserisci risultati
                     </a>
                 </li>
+                <li>
+                    <a href="admin/classifica">
+                        Classifica
+                    </a>
+                </li>
             </ul>
         </div>
     )
