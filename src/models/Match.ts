@@ -1,33 +1,15 @@
-import { dateFormat } from '../utils/utils';
+import { Squad } from './Squad';
 export type Match = MatchDatum[]
 
 export interface MatchDatum {
     id: string
     created_at: string
     day: string
-    squad_home: SquadHome
-    squad_away: SquadAway
-    score_home: any
-    score_away: any
-    outcome: any
+    squad_home: Squad
+    squad_away: Squad
+    score_home: number
+    score_away: number
+    outcome: string
     hour: string
     field: string
-}
-
-export interface SquadHome {
-    id: string
-    logo: string
-    name: string
-    group: string
-    category: string
-    created_at: string
-}
-
-export interface SquadAway {
-    id: string
-    logo: string
-    name: string
-    group: string
-    category: string
-    created_at: string
 }

@@ -1,5 +1,5 @@
-import { getAllSquadsByGroup } from "@/api/supabase";
-import { Squad } from "@/models/squad";
+import { getSquadsByGroup } from "@/api/supabase";
+import { Squad } from "@/models/Squad";
 import { GetServerSideProps } from "next";
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
 
 export const getServerSideProps: GetServerSideProps = async () => {
     try {
-        const squads = await getAllSquadsByGroup('A');
+        const squads = await getSquadsByGroup('A');
         return {
             props: {
                 squads,

@@ -36,6 +36,8 @@ export default function Update({ days }: Props) {
     return (
         <div>
             <h1>Inserisci risultato</h1>
+            {/* <pre>{JSON.stringify(days, null, 2)}</pre> */}
+
             <select onChange={handleSelectDay}>
                 <option value="">Seleziona la giornata</option>
                 {

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { createMatch, getAllCategories, getAllSquadsByCategory } from "@/api/supabase";
+import { createMatch, getAllCategories, getSquadsByCategory } from "@/api/supabase";
 import { GetServerSideProps } from "next";
 import { MatchDatum } from "@/models/Match";
 import { Squad } from "@/models/Squad";
@@ -50,8 +50,8 @@ export default function Create({ categories }: Props) {
             created_at: ""
         },
         outcome: "",
-        score_home: "",
-        score_away: "",
+        score_home: 0,
+        score_away: 0,
         field: ""
     })
 
@@ -66,7 +66,7 @@ export default function Create({ categories }: Props) {
         const category = event.target.value;
         setSelectedCategory(category);
 
-        const data = await getAllSquadsByCategory(category);
+        const data = await getSquadsByCategory(category);
         setSubcategories(data);
     };
 
