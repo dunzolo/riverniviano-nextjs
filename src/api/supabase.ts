@@ -7,10 +7,13 @@ export const getAllSquads = async () => {
     return response.data ?? [];
 }
 
+/**
+ * Recupera le singole categorie dalla risposta della query e rimuovi i duplicati
+ * @returns 
+ */
 export const getAllCategories = async () => {
     const response = await supabase.from('squads').select('category');
 
-    // Recupera le singole categorie dalla risposta della query e rimuovi i duplicati
     if (response.data) {
         const categories = response.data.map(entry => entry.category);
         const uniqueCategories = categories.filter((category, index) => categories.indexOf(category) === index);
