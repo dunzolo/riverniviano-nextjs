@@ -1,6 +1,7 @@
 import "@/styles/globals.css";
-import type { AppProps } from "next/app";
 
-export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+export default function App({ Component, pageProps } : any) {
+  // If page layout is available, use it. Else return the page
+  const getLayout = Component.getLayout || ((page : any) => page);
+  return getLayout(<Component {...pageProps} />);
 }

@@ -1,3 +1,9 @@
+import DashboardLayout from '@/components/layouts/AdminLayout';
+
+Admin.getLayout = (page : any) => (
+    <DashboardLayout>{page}</DashboardLayout>
+);
+
 export default function Admin() {
     return (
         <div>
@@ -23,3 +29,4 @@ export default function Admin() {
         </div>
     )
 }
+
