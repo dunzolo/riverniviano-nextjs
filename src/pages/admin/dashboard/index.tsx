@@ -9,6 +9,12 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+import DashboardLayout from '@/components/layouts/AdminLayout';
+
+page.getLayout = (page : any) => (
+    <DashboardLayout>{page}</DashboardLayout>
+);
+
 export default function page() {
   return (
     <ScrollArea className="h-full">
