@@ -1,4 +1,4 @@
-import { Icons } from "@/components/icons";
+import { Icons } from "@/components/Icons";
 import { NavItem, SidebarNavItem } from "@/types";
 
 export type User = {
@@ -114,15 +114,15 @@ export type Employee = {
 export const navItems: NavItem[] = [
   {
     title: "Dashboard",
-    href: "/dashboard",
+    href: "/admin",
     icon: "dashboard",
     label: "Dashboard",
   },
   {
-    title: "User",
-    href: "/dashboard/user",
+    title: "Squadre",
+    href: "/admin/squad",
     icon: "user",
-    label: "user",
+    label: "squadre",
   },
   {
     title: "Employee",
