@@ -30,7 +30,7 @@ export const SquadClient: React.FC<ProductsClientProps> = ({ data }) => {
         </Button>
       </div>
       <Separator />
-      <DataTable searchKey="name" columns={columns} data={data} />
+      <DataTable searchKeyName="name" searchKeyCategory="category" columns={columns} data={data} />
     </>
   );
 };

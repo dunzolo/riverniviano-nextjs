@@ -17,19 +17,21 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "./input";
-import { Button } from "./button";
+import { Label } from "@/components/ui/label";
 import { ScrollArea, ScrollBar } from "./scroll-area";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  searchKey: string;
+  searchKeyName: string;
+  searchKeyCategory: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  searchKey,
+  searchKeyName,
+  searchKeyCategory,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -43,15 +45,36 @@ export function DataTable<TData, TValue>({
 
   return (
     <>
-      <Input
-        placeholder={`Search ${searchKey}...`}
-        value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
-        onChange={(event) =>
-          table.getColumn(searchKey)?.setFilterValue(event.target.value)
-        }
-        className="w-full md:max-w-sm"
-      />
-      <ScrollArea className="rounded-md border h-[calc(80vh-220px)]">
+      <div className="flex">
+        <div className="grid w-full max-w-sm items-center gap-1.5 mr-3">
+          <Label htmlFor="name">Nome squadra</Label>
+          <Input
+            placeholder={`Cerca ...`}
+            value={
+              (table.getColumn(searchKeyName)?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) =>
+              table.getColumn(searchKeyName)?.setFilterValue(event.target.value)
+            }
+            className="w-full md:max-w-sm"
+          />
+        </div>
+        <div className="grid w-full max-w-sm items-center gap-1.5">
+          <Label htmlFor="name">Categoria</Label>
+          <Input
+            placeholder={`Cerca ...`}
+            value={
+              (table.getColumn(searchKeyCategory)?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) =>
+              table.getColumn(searchKeyCategory)?.setFilterValue(event.target.value)
+            }
+            className="w-full md:max-w-sm"
+          />
+        </div>
+      </div>
+
+      <ScrollArea className="rounded-md border h-[calc(80vh-204px)]">
         <Table className="relative">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -63,7 +86,7 @@ export function DataTable<TData, TValue>({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext(),
+                            header.getContext()
                           )}
                     </TableHead>
                   );
@@ -82,7 +105,7 @@ export function DataTable<TData, TValue>({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext(),
+                        cell.getContext()
                       )}
                     </TableCell>
                   ))}
@@ -106,24 +129,6 @@ export function DataTable<TData, TValue>({
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
         </div>
       </div>
     </>
