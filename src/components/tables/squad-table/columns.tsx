@@ -1,10 +1,10 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
 import { CellAction } from "./cell-action";
-import { User } from "@/constants/data";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Squad } from "@/models/Squad";
 
-export const columns: ColumnDef<User>[] = [
+export const columns: ColumnDef<Squad>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -21,24 +21,24 @@ export const columns: ColumnDef<User>[] = [
         aria-label="Select row"
       />
     ),
-    enableSorting: false,
-    enableHiding: false,
+    enableSorting: true,
+    enableHiding: true,
+  },
+  {
+    accessorKey: "logo",
+    header: "LOGO",
   },
   {
     accessorKey: "name",
-    header: "NAME",
+    header: "NOME",
   },
   {
-    accessorKey: "company",
-    header: "COMPANY",
+    accessorKey: "category",
+    header: "CATEGORIA",
   },
   {
-    accessorKey: "role",
-    header: "ROLE",
-  },
-  {
-    accessorKey: "status",
-    header: "STATUS",
+    accessorKey: "group",
+    header: "GRUPPO",
   },
   {
     id: "actions",
