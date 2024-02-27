@@ -26,12 +26,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 // import { useToast } from "../ui/use-toast";
-import { createSquad } from '@/api/supabase';
-import supabase from "@/supabase/supabase";
+import { createSquad, getMatchesByDate } from "@/api/supabase";
+import { MatchDatum } from "@/models/Match";
+import { dateFormat } from "@/utils/utils";
+
 const formSchema = z.object({
-  name: z
-    .string()
-    .min(1, { message: "Devi inserire il nome della squadra" }),
+  name: z.string().min(1, { message: "Devi inserire il nome della squadra" }),
   group: z
     .string()
     .min(1, { message: "Devi inserire la lettera del girone" })
@@ -41,26 +41,25 @@ const formSchema = z.object({
 
 type ProductFormValues = z.infer<typeof formSchema>;
 
-interface SquadFormProps {
+interface MatchFormProps {
   initialData: any | null;
-  categories: string[];
-  totalSquad: number
+  days: string[];
 }
 
-export const SquadForm: React.FC<SquadFormProps> = ({
-  initialData,
-  categories,
-  totalSquad
-}) => {
+export const MatchForm: React.FC<MatchFormProps> = ({ initialData, days }) => {
   const params = useParams();
   const router = useRouter();
   // const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const title = initialData ? "Modifica squadra" : "Crea squadra";
-  const description = initialData ? "Modifica i dati di questa squadra." : "Aggiungi una nuova squadra";
-  const toastMessage = initialData ? "Squadra aggiornata." : "Squadra creata.";
-  const action = initialData ? "Modifica" : "Crea";
+  const title = initialData ? "Modifica risultati" : "Inserisci risultati";
+  const description = initialData
+    ? "Modifica i risultati."
+    : "Inserisci i nuovi risultati";
+  const toastMessage = initialData
+    ? "Risultati aggiornati."
+    : "Risultati inseriti.";
+  const action = initialData ? "Modifica" : "Inserisci";
 
   const defaultValues = initialData
     ? initialData
@@ -75,16 +74,23 @@ export const SquadForm: React.FC<SquadFormProps> = ({
     defaultValues,
   });
 
+  const [selectedDay, setSelectedDay] = useState<MatchDatum[]>([]);
+
+  const handleSelectDay = async (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const data = await getMatchesByDate(event.target.value);
+    setSelectedDay(data);
+  };
+
   const onSubmit = async (data: ProductFormValues) => {
     try {
       setLoading(true);
-      
-      //TODO: spostare la chiamata in base al base al form di creazione o modifica
+
       //recupero anche il numero totale di squadre iscritte per evitare conflitto ID in fare di creazione
-      const res = await createSquad(totalSquad + 1,data.name, data.category, data.group);
 
       if (initialData) {
-         // await axios.post(`/api/products/edit-product/${initialData._id}`, data);
+        // await axios.post(`/api/products/edit-product/${initialData._id}`, data);
       } else {
         // const res = await axios.post(`/api/products/create-product`, data);
         // console.log("product", res);
@@ -98,7 +104,7 @@ export const SquadForm: React.FC<SquadFormProps> = ({
       //   description: "There was a problem with your request.",
       // });
     } catch (error: any) {
-      console.log(error)
+      console.log(error);
       // toast({
       //   variant: "destructive",
       //   title: "Uh oh! Something went wrong.",
@@ -131,6 +137,18 @@ export const SquadForm: React.FC<SquadFormProps> = ({
         )}
       </div>
       <Separator />
+
+      <select onChange={handleSelectDay}>
+        <option value="">Seleziona la giornata</option>
+        {days.map((day) => {
+          return (
+            <option key={day} value={day}>
+              {dateFormat(day)}
+            </option>
+          );
+        })}
+      </select>
+
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -150,39 +168,6 @@ export const SquadForm: React.FC<SquadFormProps> = ({
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="category"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Categoria</FormLabel>
-                  <Select
-                    disabled={loading}
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue
-                          defaultValue={field.value}
-                          placeholder="Scegli la categoria"
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {/* @ts-ignore  */}
-                      {categories.map((category) => (
-                        <SelectItem key={category} value={category}>
-                          {category}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

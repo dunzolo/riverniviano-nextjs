@@ -30,9 +30,9 @@ export const MatchClient: React.FC<MatchClientProps> = ({ data }) => {
         />
         <Button
           className="text-xs md:text-sm"
-          onClick={() => router.push(`/admin/match/create`)}
+          onClick={() => router.push(`/admin/match/update`)}
         >
-          <Plus className="mr-2 h-4 w-4" /> Add New
+          <Plus className="mr-2 h-4 w-4" /> Inserisci risultati
         </Button>
       </div>
       <Separator />
@@ -40,6 +40,7 @@ export const MatchClient: React.FC<MatchClientProps> = ({ data }) => {
         <TabsContent value="overview" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
 						{
+							//TODO: inserire loghi delle squadre dentro la card
 							data && data.map(singleMatch => {
 								return(
 									<Card key={singleMatch.id}>
