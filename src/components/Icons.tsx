@@ -24,6 +24,7 @@ import {
     Settings,
     SunMedium,
     Trash,
+    Trophy,
     Twitter,
     User,
     User2Icon,
@@ -60,6 +61,7 @@ import {
     sun: SunMedium,
     moon: Moon,
     laptop: Laptop,
+    trophy: Trophy,
     gitHub: ({ ...props }: LucideProps) => (
       <svg
         aria-hidden="true"
