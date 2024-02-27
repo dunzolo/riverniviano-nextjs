@@ -90,6 +90,31 @@ export const createMatch = async (date: string, hour: string, selectedSquadHome:
         ]);
 }
 
+/**
+ //TODO: gestire il caricamento del logo da pannello admin
+ * Crea la squadra con nome, categoria e gruppo
+ * NB: il logo è da inserire direttamente da DB
+ * @param id 
+ * @param name nome della squadra
+ * @param category categoria della squadra
+ * @param group girone
+ * @returns 
+ */
+export const createSquad = async (id: number, name: string, category: string, group: string) => {
+    const response = await supabase
+        .from("squads")
+        .insert([
+            {
+                id: id,
+                name: name.toUpperCase(),
+                category: category,
+                group: group.toUpperCase(),
+            }
+        ]);
+
+        return response
+}
+
 export const updateSquad = async (tableName: string, newData: string, recordId: string) => {
     const response = await supabase
         .from(tableName)
