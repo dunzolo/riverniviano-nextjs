@@ -8,11 +8,11 @@ import { useRouter } from "next/navigation";
 import { columns } from "./columns";
 import { Squad } from "@/models/Squad";
 
-interface ProductsClientProps {
+interface SquadClientProps {
   data: Squad[];
 }
 
-export const SquadClient: React.FC<ProductsClientProps> = ({ data }) => {
+export const SquadClient: React.FC<SquadClientProps> = ({ data }) => {
   const router = useRouter();
 
   return (
