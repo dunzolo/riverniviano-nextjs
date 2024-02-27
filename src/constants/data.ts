@@ -125,10 +125,10 @@ export const navItems: NavItem[] = [
     label: "squadre",
   },
   {
-    title: "Employee",
-    href: "/dashboard/employee",
-    icon: "employee",
-    label: "employee",
+    title: "Match",
+    href: "/admin/match",
+    icon: "trophy",
+    label: "match",
   },
   {
     title: "Profile",
