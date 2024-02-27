@@ -76,6 +76,17 @@ export const getMatchesBySquad = async (id:string) : Promise<Match> => {
     return response.data ?? [];
 }
 
+export const getMatchesWithResult = async () : Promise<MatchDatum[]> => {
+    const response = await supabase
+        .from('match')
+        .select('*, squad_home(*), squad_away(*)')
+        .not('score_home', 'is', null)
+        .not('score_away', 'is', null)
+        .order('id', { ascending: true });
+
+    return response.data ?? [];
+}
+
 export const createMatch = async (date: string, hour: string, selectedSquadHome: string, selectedSquadAway: string, field: string) => {
     const response = await supabase
         .from("match")
