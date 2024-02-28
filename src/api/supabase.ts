@@ -76,6 +76,17 @@ export const getMatchesBySquad = async (id:string) : Promise<Match> => {
     return response.data ?? [];
 }
 
+export const getMatchesWithResult = async () : Promise<MatchDatum[]> => {
+    const response = await supabase
+        .from('match')
+        .select('*, squad_home(*), squad_away(*)')
+        .not('score_home', 'is', null)
+        .not('score_away', 'is', null)
+        .order('id', { ascending: true });
+
+    return response.data ?? [];
+}
+
 export const createMatch = async (date: string, hour: string, selectedSquadHome: string, selectedSquadAway: string, field: string) => {
     const response = await supabase
         .from("match")
@@ -88,6 +99,31 @@ export const createMatch = async (date: string, hour: string, selectedSquadHome:
                 field: field
             }
         ]);
+}
+
+/**
+ //TODO: gestire il caricamento del logo da pannello admin
+ * Crea la squadra con nome, categoria e gruppo
+ * NB: il logo è da inserire direttamente da DB
+ * @param id 
+ * @param name nome della squadra
+ * @param category categoria della squadra
+ * @param group girone
+ * @returns 
+ */
+export const createSquad = async (id: number, name: string, category: string, group: string) => {
+    const response = await supabase
+        .from("squads")
+        .insert([
+            {
+                id: id,
+                name: name.toUpperCase(),
+                category: category,
+                group: group.toUpperCase(),
+            }
+        ]);
+
+        return response
 }
 
 export const updateSquad = async (tableName: string, newData: string, recordId: string) => {
