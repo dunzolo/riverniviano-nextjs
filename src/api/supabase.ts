@@ -1,6 +1,6 @@
 import { Match, MatchDatum } from "@/models/Match";
 import { Squad } from "@/models/Squad";
-import { supabase } from "@/supabase/supabase"
+import supabase from "@/supabase/supabase"
 
 export const getAllSquads = async () => {
     const response = await supabase.from('squads').select('*');
