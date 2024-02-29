@@ -27,7 +27,6 @@ import {
 } from "@/components/ui/select";
 // import { useToast } from "../ui/use-toast";
 import { createSquad } from '@/api/supabase';
-import supabase from "@/supabase/supabase";
 const formSchema = z.object({
   name: z
     .string()
@@ -65,10 +64,10 @@ export const SquadForm: React.FC<SquadFormProps> = ({
   const defaultValues = initialData
     ? initialData
     : {
-        name: "",
-        category: "",
-        group: "",
-      };
+      name: "",
+      category: "",
+      group: "",
+    };
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(formSchema),
@@ -78,13 +77,13 @@ export const SquadForm: React.FC<SquadFormProps> = ({
   const onSubmit = async (data: ProductFormValues) => {
     try {
       setLoading(true);
-      
+
       //TODO: spostare la chiamata in base al base al form di creazione o modifica
       //recupero anche il numero totale di squadre iscritte per evitare conflitto ID in fare di creazione
-      const res = await createSquad(totalSquad + 1,data.name, data.category, data.group);
+      const res = await createSquad(totalSquad + 1, data.name, data.category, data.group);
 
       if (initialData) {
-         // await axios.post(`/api/products/edit-product/${initialData._id}`, data);
+        // await axios.post(`/api/products/edit-product/${initialData._id}`, data);
       } else {
         // const res = await axios.post(`/api/products/create-product`, data);
         // console.log("product", res);
