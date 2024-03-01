@@ -7,7 +7,7 @@ Home.getLayout = (page: any) => {
 export default function Home() {
   return (
     <div>
-      <main><h1>Home page modificata</h1></main>
+      <main><h1>Home page</h1></main>
     </div>
   );
 }
