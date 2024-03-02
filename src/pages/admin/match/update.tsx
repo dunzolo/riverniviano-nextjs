@@ -1,15 +1,20 @@
-import { getAllDays, getMatchesByDate } from "@/api/supabase";
+// #LAYOUT
 import DashboardLayout from "@/components/layouts/AdminLayout";
+// #SUPABASE
+import { getAllDays, getMatchesByDate } from "@/api/supabase";
+// #MODELS
 import { MatchDatum } from "@/models/Match";
+// #UTILS
 import { dateFormat } from "@/utils/utils";
+// #NEXT & REACT
 import { GetServerSideProps } from "next";
 import React, { useState } from "react";
+// #UI COMPONENT
 import { ScrollArea } from "@/components/ui/scroll-area";
 import BreadCrumb from "@/components/Breadcrumb";
 import { MatchForm } from "@/components/forms/match-form";
 import { Separator } from "@/components/ui/separator";
 import { Heading } from "@/components/ui/heading";
-
 import {
   Select,
   SelectContent,
@@ -60,7 +65,10 @@ export default function Update({ daysProps }: Props) {
         <BreadCrumb items={breadcrumbItems} />
 
         <div className="flex items-center justify-between">
-          <Heading title="title" description="description" />
+          <Heading
+            title="Inserisci i risultati"
+            description="in questa sezione puoi inserire i risultati del torneo selezionando la giornata"
+          />
         </div>
         <Separator />
 
@@ -88,26 +96,5 @@ export default function Update({ daysProps }: Props) {
         </div>
       </div>
     </ScrollArea>
-    // <div>
-    //     <h1>Inserisci risultato</h1>
-    //     {/* <pre>{JSON.stringify(days, null, 2)}</pre> */}
-
-    //     <select onChange={handleSelectDay}>
-    //         <option value="">Seleziona la giornata</option>
-    //         {
-    //             days.map(day => {
-    //                 return (
-    //                     <option key={day} value={day}>{dateFormat(day)}</option>
-    //                 )
-    //             })
-    //         }
-    //     </select>
-    //     {/* <pre>{JSON.stringify(selectedDay, null, 2)}</pre> */}
-    //     {
-    //         selectedDay.map((item) => {
-    //             return <AppResult key={item.id} item={item} />
-    //         })
-    //     }
-    // </div>
   );
 }

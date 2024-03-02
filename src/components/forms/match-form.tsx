@@ -1,42 +1,49 @@
 "use client";
+// #ZOD
 import * as z from "zod";
-import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+// #REACT
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+// #NEXT
 import { useParams, useRouter } from "next/navigation";
+// #UI COMPONENTS
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
+// #SUPABSE
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-
+  getMatchesBySquad,
+  getSquadsByGroup,
+  updateResult,
+} from "@/api/supabase";
+// #MODEL
+import { Match } from "@/models/Match";
+import { SquadGroup } from "@/models/SquadGroup";
+// #UTILS
+import { updatePoints } from "@/utils/utils";
 // import { useToast } from "../ui/use-toast";
-import { MatchDatum } from "@/models/Match";
-import { updateResult } from "@/api/supabase";
 
 const formSchema = z.object({
-  score_home: z.string(),
-  score_away: z.string(),
+  //utilizzo coerce per validazione su campo input di tipo numerico
+  score_home: z.coerce
+    .number()
+    .min(0, "Non puoi inserrie un valore minore di zero"),
+  score_away: z.coerce
+    .number()
+    .min(0, "Non puoi inserrie un valore minore di zero"),
 });
 
 type ProductFormValues = z.infer<typeof formSchema>;
 
 interface MatchFormProps {
-  //per togliere errore mettere any | lasciare per vedere suggerimenti
   initialData: any;
 }
 
@@ -56,13 +63,13 @@ export const MatchForm: React.FC<MatchFormProps> = ({ initialData }) => {
   const toastMessage = initialData
     ? "Risultati aggiornati."
     : "Risultati inseriti.";
-  const action = initialData ? "Modifica" : "Inserisci";
+  const action = initialData.score_home ? "Modifica" : "Inserisci";
 
   const defaultValues = initialData
     ? initialData
     : {
-        score_home: "",
-        score_away: "",
+        score_home: 0,
+        score_away: 0,
       };
 
   const form = useForm<ProductFormValues>({
@@ -73,22 +80,31 @@ export const MatchForm: React.FC<MatchFormProps> = ({ initialData }) => {
   const onSubmit = async (data: ProductFormValues) => {
     const outcome = `${data.score_home} - ${data.score_away}`;
 
+    const matchesBySquadHome: Match = await getMatchesBySquad(squad_home.id);
+    const matchesBySquadAway: Match = await getMatchesBySquad(squad_away.id);
+
+    const squadHome: SquadGroup[] = await getSquadsByGroup(
+      squad_home.group,
+      squad_home.id
+    );
+    const squadAway: SquadGroup[] = await getSquadsByGroup(
+      squad_away.group,
+      squad_away.id
+    );
+
+    updatePoints(matchesBySquadHome, squadHome[0], squad_home.group, true);
+    updatePoints(matchesBySquadAway, squadAway[0], squad_away.group, false);
+
     try {
       setLoading(true);
 
       await updateResult(
         initialData.id,
-        parseInt(data.score_home),
-        parseInt(data.score_away),
+        data.score_home,
+        data.score_away,
         outcome
       );
 
-      if (initialData) {
-        // await axios.post(`/api/products/edit-product/${initialData._id}`, data);
-      } else {
-        // const res = await axios.post(`/api/products/create-product`, data);
-        // console.log("product", res);
-      }
       //TODO: gestire le notifiche toast all'inserimento/modifica/cancellazione di una squadra
       // router.refresh();
       // router.push(`/admin/squad`);
@@ -121,12 +137,12 @@ export const MatchForm: React.FC<MatchFormProps> = ({ initialData }) => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 w-full"
+          className="space-y-8 w-full mb-5"
         >
           <Card key={null}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                📆 {hour} | {squad_home.category}
+                📆 {hour} | {squad_home.category} | {squad_home.group}
               </CardTitle>
             </CardHeader>
             <CardContent>
