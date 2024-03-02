@@ -26,11 +26,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 // import { useToast } from "../ui/use-toast";
-import { createSquad } from '@/api/supabase';
+import { createSquad } from "@/api/supabase";
 const formSchema = z.object({
-  name: z
-    .string()
-    .min(1, { message: "Devi inserire il nome della squadra" }),
+  name: z.string().min(1, { message: "Devi inserire il nome della squadra" }),
   group: z
     .string()
     .min(1, { message: "Devi inserire la lettera del girone" })
@@ -43,13 +41,13 @@ type ProductFormValues = z.infer<typeof formSchema>;
 interface SquadFormProps {
   initialData: any | null;
   categories: string[];
-  totalSquad: number
+  totalSquad: number;
 }
 
 export const SquadForm: React.FC<SquadFormProps> = ({
   initialData,
   categories,
-  totalSquad
+  totalSquad,
 }) => {
   const params = useParams();
   const router = useRouter();
@@ -57,17 +55,19 @@ export const SquadForm: React.FC<SquadFormProps> = ({
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const title = initialData ? "Modifica squadra" : "Crea squadra";
-  const description = initialData ? "Modifica i dati di questa squadra." : "Aggiungi una nuova squadra";
+  const description = initialData
+    ? "Modifica i dati di questa squadra."
+    : "Aggiungi una nuova squadra";
   const toastMessage = initialData ? "Squadra aggiornata." : "Squadra creata.";
   const action = initialData ? "Modifica" : "Crea";
 
   const defaultValues = initialData
     ? initialData
     : {
-      name: "",
-      category: "",
-      group: "",
-    };
+        name: "",
+        category: "",
+        group: "",
+      };
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(formSchema),
@@ -75,12 +75,19 @@ export const SquadForm: React.FC<SquadFormProps> = ({
   });
 
   const onSubmit = async (data: ProductFormValues) => {
+    console.log("qui");
+
     try {
       setLoading(true);
 
       //TODO: spostare la chiamata in base al base al form di creazione o modifica
       //recupero anche il numero totale di squadre iscritte per evitare conflitto ID in fare di creazione
-      const res = await createSquad(totalSquad + 1, data.name, data.category, data.group);
+      const res = await createSquad(
+        totalSquad + 1,
+        data.name,
+        data.category,
+        data.group
+      );
 
       if (initialData) {
         // await axios.post(`/api/products/edit-product/${initialData._id}`, data);
@@ -97,7 +104,7 @@ export const SquadForm: React.FC<SquadFormProps> = ({
       //   description: "There was a problem with your request.",
       // });
     } catch (error: any) {
-      console.log(error)
+      console.log(error);
       // toast({
       //   variant: "destructive",
       //   title: "Uh oh! Something went wrong.",

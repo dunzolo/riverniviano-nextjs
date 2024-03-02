@@ -1,52 +1,56 @@
 "use client";
+// #ZOD
 import * as z from "zod";
-import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+// #REACT
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Trash } from "lucide-react";
+// #NEXT
 import { useParams, useRouter } from "next/navigation";
+// #UI COMPONENTS
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Separator } from "@/components/ui/separator";
-import { Heading } from "@/components/ui/heading";
+// #SUPABSE
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  getMatchesBySquad,
+  getSquadsByGroup,
+  updateResult,
+} from "@/api/supabase";
+// #MODEL
+import { Match } from "@/models/Match";
+import { SquadGroup } from "@/models/SquadGroup";
+// #UTILS
+import { updatePoints } from "@/utils/utils";
 // import { useToast } from "../ui/use-toast";
-import { createSquad, getMatchesByDate } from "@/api/supabase";
-import { MatchDatum } from "@/models/Match";
-import { dateFormat } from "@/utils/utils";
 
 const formSchema = z.object({
-  name: z.string().min(1, { message: "Devi inserire il nome della squadra" }),
-  group: z
-    .string()
-    .min(1, { message: "Devi inserire la lettera del girone" })
-    .max(1, { message: "Il girone non può avere più di una lettera" }),
-  category: z.string().min(1, { message: "Devi selezionare una categoria" }),
+  //utilizzo coerce per validazione su campo input di tipo numerico
+  score_home: z.coerce
+    .number()
+    .min(0, "Non puoi inserrie un valore minore di zero"),
+  score_away: z.coerce
+    .number()
+    .min(0, "Non puoi inserrie un valore minore di zero"),
 });
 
 type ProductFormValues = z.infer<typeof formSchema>;
 
 interface MatchFormProps {
-  initialData: any | null;
-  days: string[];
+  initialData: any;
 }
 
-export const MatchForm: React.FC<MatchFormProps> = ({ initialData, days }) => {
+export const MatchForm: React.FC<MatchFormProps> = ({ initialData }) => {
+  const { day, squad_home, squad_away, score_home, score_away, hour, field } =
+    initialData;
+
   const params = useParams();
   const router = useRouter();
   // const { toast } = useToast();
@@ -59,14 +63,13 @@ export const MatchForm: React.FC<MatchFormProps> = ({ initialData, days }) => {
   const toastMessage = initialData
     ? "Risultati aggiornati."
     : "Risultati inseriti.";
-  const action = initialData ? "Modifica" : "Inserisci";
+  const action = initialData.score_home ? "Modifica" : "Inserisci";
 
   const defaultValues = initialData
     ? initialData
     : {
-        name: "",
-        category: "",
-        group: "",
+        score_home: 0,
+        score_away: 0,
       };
 
   const form = useForm<ProductFormValues>({
@@ -74,27 +77,34 @@ export const MatchForm: React.FC<MatchFormProps> = ({ initialData, days }) => {
     defaultValues,
   });
 
-  const [selectedDay, setSelectedDay] = useState<MatchDatum[]>([]);
-
-  const handleSelectDay = async (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const data = await getMatchesByDate(event.target.value);
-    setSelectedDay(data);
-  };
-
   const onSubmit = async (data: ProductFormValues) => {
+    const outcome = `${data.score_home} - ${data.score_away}`;
+
+    const matchesBySquadHome: Match = await getMatchesBySquad(squad_home.id);
+    const matchesBySquadAway: Match = await getMatchesBySquad(squad_away.id);
+
+    const squadHome: SquadGroup[] = await getSquadsByGroup(
+      squad_home.group,
+      squad_home.id
+    );
+    const squadAway: SquadGroup[] = await getSquadsByGroup(
+      squad_away.group,
+      squad_away.id
+    );
+
+    updatePoints(matchesBySquadHome, squadHome[0], squad_home.group, true);
+    updatePoints(matchesBySquadAway, squadAway[0], squad_away.group, false);
+
     try {
       setLoading(true);
 
-      //recupero anche il numero totale di squadre iscritte per evitare conflitto ID in fare di creazione
+      await updateResult(
+        initialData.id,
+        data.score_home,
+        data.score_away,
+        outcome
+      );
 
-      if (initialData) {
-        // await axios.post(`/api/products/edit-product/${initialData._id}`, data);
-      } else {
-        // const res = await axios.post(`/api/products/create-product`, data);
-        // console.log("product", res);
-      }
       //TODO: gestire le notifiche toast all'inserimento/modifica/cancellazione di una squadra
       // router.refresh();
       // router.push(`/admin/squad`);
@@ -123,76 +133,54 @@ export const MatchForm: React.FC<MatchFormProps> = ({ initialData, days }) => {
         onConfirm={onDelete}
         loading={loading}
       /> */}
-      <div className="flex items-center justify-between">
-        <Heading title={title} description={description} />
-        {initialData && (
-          <Button
-            disabled={loading}
-            variant="destructive"
-            size="sm"
-            onClick={() => setOpen(true)}
-          >
-            <Trash className="h-4 w-4" />
-          </Button>
-        )}
-      </div>
-      <Separator />
-
-      <select onChange={handleSelectDay}>
-        <option value="">Seleziona la giornata</option>
-        {days.map((day) => {
-          return (
-            <option key={day} value={day}>
-              {dateFormat(day)}
-            </option>
-          );
-        })}
-      </select>
 
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 w-full"
+          className="space-y-8 w-full mb-5"
         >
-          <div className="md:grid md:grid-cols-3 gap-8">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nome</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={loading}
-                      placeholder="Inserisci il nome della squadra"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="group"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Girone</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={loading}
-                      placeholder="Inserisci il girone"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <Button disabled={loading} className="ml-auto" type="submit">
-            {action}
-          </Button>
+          <Card key={null}>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                📆 {hour} | {squad_home.category} | {squad_home.group}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex w-full items-center justify-between space-x-2 mb-3">
+                <span>{squad_home.name}</span>
+                <FormField
+                  control={form.control}
+                  name="score_home"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input type="number" className="w-[5rem]" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="flex w-full items-center justify-between space-x-2 mb-3">
+                <span>{squad_away.name}</span>
+                <FormField
+                  control={form.control}
+                  name="score_away"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input type="number" className="w-[5rem]" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <Button className="w-full" type="submit">
+                {action}
+              </Button>
+            </CardContent>
+          </Card>
         </form>
       </Form>
     </>
