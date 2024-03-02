@@ -1,14 +1,29 @@
-import { getAllDays, getMatchesByDate } from "@/api/supabase";
+// #LAYOUT
 import DashboardLayout from "@/components/layouts/AdminLayout";
-import AppResult from "@/components/AppResult";
+// #SUPABASE
+import { getAllDays, getMatchesByDate } from "@/api/supabase";
+// #MODELS
 import { MatchDatum } from "@/models/Match";
+// #UTILS
 import { dateFormat } from "@/utils/utils";
+// #NEXT & REACT
 import { GetServerSideProps } from "next";
 import React, { useState } from "react";
+// #UI COMPONENT
 import { ScrollArea } from "@/components/ui/scroll-area";
 import BreadCrumb from "@/components/Breadcrumb";
-import { Match } from '../../../models/Match';
 import { MatchForm } from "@/components/forms/match-form";
+import { Separator } from "@/components/ui/separator";
+import { Heading } from "@/components/ui/heading";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type Props = {
   daysProps: string[];
@@ -32,43 +47,54 @@ export const getServerSideProps: GetServerSideProps = async () => {
 Update.getLayout = (page: any) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default function Update({ daysProps }: Props) {
-	const breadcrumbItems = [
+  const breadcrumbItems = [
     { title: "Match", link: "/admin/match" },
     { title: "Inserisci risultati", link: "/admin/match/update" },
   ];
-  
+
+  const [selectedDay, setSelectedDay] = useState<MatchDatum[]>([]);
+
+  const handleSelectDay = async (event: any) => {
+    const data = await getMatchesByDate(event);
+    setSelectedDay(data);
+  };
 
   return (
     <ScrollArea className="h-full">
       <div className="flex-1 space-y-4 p-5">
         <BreadCrumb items={breadcrumbItems} />
-				<MatchForm
-          days={daysProps}
-          initialData={null}
-          key={null}
-        />
+
+        <div className="flex items-center justify-between">
+          <Heading
+            title="Inserisci i risultati"
+            description="in questa sezione puoi inserire i risultati del torneo selezionando la giornata"
+          />
+        </div>
+        <Separator />
+
+        <Select onValueChange={handleSelectDay}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Seleziona la giornata" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {daysProps.map((day) => {
+                return (
+                  <SelectItem key={day} value={day}>
+                    {dateFormat(day)}
+                  </SelectItem>
+                );
+              })}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+
+        <div className="md:grid md:grid-cols-4 gap-8">
+          {selectedDay.map((item) => {
+            return <MatchForm initialData={item} key={item.id} />;
+          })}
+        </div>
       </div>
     </ScrollArea>
-    // <div>
-    //     <h1>Inserisci risultato</h1>
-    //     {/* <pre>{JSON.stringify(days, null, 2)}</pre> */}
-
-    //     <select onChange={handleSelectDay}>
-    //         <option value="">Seleziona la giornata</option>
-    //         {
-    //             days.map(day => {
-    //                 return (
-    //                     <option key={day} value={day}>{dateFormat(day)}</option>
-    //                 )
-    //             })
-    //         }
-    //     </select>
-    //     {/* <pre>{JSON.stringify(selectedDay, null, 2)}</pre> */}
-    //     {
-    //         selectedDay.map((item) => {
-    //             return <AppResult key={item.id} item={item} />
-    //         })
-    //     }
-    // </div>
   );
 }

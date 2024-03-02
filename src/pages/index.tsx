@@ -1,6 +1,6 @@
 import RootLayout from "@/components/layouts/RootLayout";
 
-Home.getLayout = (page : any) => {
+Home.getLayout = (page: any) => {
   return <RootLayout>{page}</RootLayout>;
 };
 
