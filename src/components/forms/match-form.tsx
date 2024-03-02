@@ -26,10 +26,11 @@ import {
 
 // import { useToast } from "../ui/use-toast";
 import { MatchDatum } from "@/models/Match";
+import { updateResult } from "@/api/supabase";
 
 const formSchema = z.object({
-  score_home: z.number().min(1, "Prova"),
-  score_away: z.number(),
+  score_home: z.string(),
+  score_away: z.string(),
 });
 
 type ProductFormValues = z.infer<typeof formSchema>;
@@ -70,12 +71,17 @@ export const MatchForm: React.FC<MatchFormProps> = ({ initialData }) => {
   });
 
   const onSubmit = async (data: ProductFormValues) => {
-    console.log(data, squad_home.name, squad_away.name);
+    const outcome = `${data.score_home} - ${data.score_away}`;
 
     try {
       setLoading(true);
 
-      //recupero anche il numero totale di squadre iscritte per evitare conflitto ID in fare di creazione
+      await updateResult(
+        initialData.id,
+        parseInt(data.score_home),
+        parseInt(data.score_away),
+        outcome
+      );
 
       if (initialData) {
         // await axios.post(`/api/products/edit-product/${initialData._id}`, data);
