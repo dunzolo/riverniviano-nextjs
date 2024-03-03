@@ -123,7 +123,10 @@ export const MatchForm: React.FC<MatchFormProps> = ({ initialData }) => {
         description: "There was a problem with your request.",
       });
     } finally {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+        router.refresh();
+      }, 1500);
     }
   };
 
@@ -178,7 +181,7 @@ export const MatchForm: React.FC<MatchFormProps> = ({ initialData }) => {
                   )}
                 />
               </div>
-              <Button className="w-full" type="submit">
+              <Button disabled={loading} className="w-full" type="submit">
                 {action}
               </Button>
             </CardContent>
