@@ -1,7 +1,6 @@
 import { cn } from "@/lib/utils";
-// import { MobileSidebar } from "./mobile-sidebar";
-// import { UserNav } from "./user-nav";
 import Link from "next/link";
+import { AdminHeaderMobile } from "./AdminHeaderMobile";
 
 export default function AdminHeader() {
   return (
@@ -26,13 +25,9 @@ export default function AdminHeader() {
             </svg>
           </Link>
         </div>
-        {/* <div className={cn("block lg:!hidden")}>
-          <MobileSidebar />
-        </div> */}
-
-        {/* <div className="flex items-center gap-2">
-          <UserNav />
-        </div> */}
+        <div className={cn("block lg:!hidden")}>
+          <AdminHeaderMobile />
+        </div>
       </nav>
     </div>
   );
