@@ -5,11 +5,11 @@ import { getAllDays, getMatchesByDate } from "@/api/supabase";
 // #MODELS
 import { MatchDatum } from "@/models/Match";
 // #UTILS
-import { dateFormat } from "@/utils/utils";
+import { dateFormatItalian } from "@/utils/utils";
 // #NEXT & REACT
 import { GetServerSideProps } from "next";
 import React, { useState } from "react";
-// #UI COMPONENT
+// #UI COMPONENTS
 import { ScrollArea } from "@/components/ui/scroll-area";
 import BreadCrumb from "@/components/Breadcrumb";
 import { MatchForm } from "@/components/forms/match-form";
@@ -81,7 +81,7 @@ export default function Update({ daysProps }: Props) {
               {daysProps.map((day) => {
                 return (
                   <SelectItem key={day} value={day}>
-                    {dateFormat(day)}
+                    {dateFormatItalian(day)}
                   </SelectItem>
                 );
               })}

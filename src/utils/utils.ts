@@ -2,7 +2,12 @@ import { updatePointsGroup } from "@/api/supabase";
 import { Match, MatchDatum } from "@/models/Match";
 import { SquadGroup } from "@/models/SquadGroup";
 
-export const dateFormat = (date: string) => {
+/**
+ * Funzione che converte la data in formato italiano
+ * @param date
+ * @returns
+ */
+export const dateFormatItalian = (date: string) => {
   const data = new Date(date);
 
   //const opzioni = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
@@ -13,6 +18,17 @@ export const dateFormat = (date: string) => {
     dataFormattata.charAt(0).toUpperCase() + dataFormattata.slice(1);
 
   return dataFormattataCapitalized;
+};
+
+/**
+ * Funzione che rimuove i secondi dall'orario in formato stringa
+ * @param time
+ * @returns
+ */
+export const timeFormatHoursMinutes = (time: string) => {
+  const [hours, minutes] = time.split(":");
+  const formattedTime = `${hours}:${minutes}`;
+  return formattedTime;
 };
 
 /**

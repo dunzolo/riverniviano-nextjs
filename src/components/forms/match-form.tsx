@@ -28,7 +28,11 @@ import {
 import { Match } from "@/models/Match";
 import { SquadGroup } from "@/models/SquadGroup";
 // #UTILS
-import { updatePoints } from "@/utils/utils";
+import {
+  dateFormatItalian,
+  timeFormatHoursMinutes,
+  updatePoints,
+} from "@/utils/utils";
 // import { useToast } from "../ui/use-toast";
 
 const formSchema = z.object({
@@ -80,21 +84,6 @@ export const MatchForm: React.FC<MatchFormProps> = ({ initialData }) => {
   const onSubmit = async (data: ProductFormValues) => {
     const outcome = `${data.score_home} - ${data.score_away}`;
 
-    const matchesBySquadHome: Match = await getMatchesBySquad(squad_home.id);
-    const matchesBySquadAway: Match = await getMatchesBySquad(squad_away.id);
-
-    const squadHome: SquadGroup[] = await getSquadsByGroup(
-      squad_home.group,
-      squad_home.id
-    );
-    const squadAway: SquadGroup[] = await getSquadsByGroup(
-      squad_away.group,
-      squad_away.id
-    );
-
-    updatePoints(matchesBySquadHome, squadHome[0], squad_home.group, true);
-    updatePoints(matchesBySquadAway, squadAway[0], squad_away.group, false);
-
     try {
       setLoading(true);
 
@@ -104,6 +93,22 @@ export const MatchForm: React.FC<MatchFormProps> = ({ initialData }) => {
         data.score_away,
         outcome
       );
+
+      const matchesBySquadHome: Match = await getMatchesBySquad(squad_home.id);
+      const matchesBySquadAway: Match = await getMatchesBySquad(squad_away.id);
+
+      const squadHome: SquadGroup[] = await getSquadsByGroup(
+        squad_home.group,
+        squad_home.id
+      );
+
+      const squadAway: SquadGroup[] = await getSquadsByGroup(
+        squad_away.group,
+        squad_away.id
+      );
+
+      updatePoints(matchesBySquadHome, squadHome[0], squad_home.group, true);
+      updatePoints(matchesBySquadAway, squadAway[0], squad_away.group, false);
 
       //TODO: gestire le notifiche toast all'inserimento/modifica/cancellazione di una squadra
       // router.refresh();
@@ -142,7 +147,14 @@ export const MatchForm: React.FC<MatchFormProps> = ({ initialData }) => {
           <Card key={null}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                📆 {hour} | {squad_home.category} | {squad_home.group}
+                📆&nbsp;{dateFormatItalian(day)}&nbsp;|&nbsp;
+                {timeFormatHoursMinutes(hour)}
+                <p className="text-xs text-muted-foreground pt-1">
+                  Categoria:&nbsp;
+                  <span className="font-bold">{squad_home.category}</span>
+                  &nbsp;-&nbsp;Girone:&nbsp;
+                  <span className="font-bold">{squad_home.group}</span>
+                </p>
               </CardTitle>
             </CardHeader>
             <CardContent>
