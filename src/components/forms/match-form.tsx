@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 // #NEXT
 import { useParams, useRouter } from "next/navigation";
 // #UI COMPONENTS
+import { useToast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,7 +34,9 @@ import {
   timeFormatHoursMinutes,
   updatePoints,
 } from "@/utils/utils";
-// import { useToast } from "../ui/use-toast";
+
+const BUTTON_TEXT_INSERT = "Inserisci";
+const BUTTON_TEXT_UPDATE = "Modifica";
 
 const formSchema = z.object({
   //utilizzo coerce per validazione su campo input di tipo numerico
@@ -52,22 +55,16 @@ interface MatchFormProps {
 }
 
 export const MatchForm: React.FC<MatchFormProps> = ({ initialData }) => {
-  const { day, squad_home, squad_away, score_home, score_away, hour, field } =
-    initialData;
-
-  const params = useParams();
   const router = useRouter();
-  // const { toast } = useToast();
+  const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const title = initialData ? "Modifica risultati" : "Inserisci risultati";
-  const description = initialData
-    ? "Modifica i risultati."
-    : "Inserisci i nuovi risultati";
-  const toastMessage = initialData
-    ? "Risultati aggiornati."
-    : "Risultati inseriti.";
-  const action = initialData.score_home ? "Modifica" : "Inserisci";
+  const [action, setAction] = useState(
+    initialData.score_home ? BUTTON_TEXT_UPDATE : BUTTON_TEXT_INSERT
+  );
+
+  const { day, squad_home, squad_away, score_home, score_away, hour, field } =
+    initialData;
 
   const defaultValues = initialData
     ? initialData
@@ -110,21 +107,21 @@ export const MatchForm: React.FC<MatchFormProps> = ({ initialData }) => {
       updatePoints(matchesBySquadHome, squadHome[0], squad_home.group, true);
       updatePoints(matchesBySquadAway, squadAway[0], squad_away.group, false);
 
-      //TODO: gestire le notifiche toast all'inserimento/modifica/cancellazione di una squadra
-      // router.refresh();
-      // router.push(`/admin/squad`);
-      // toast({
-      //   variant: "destructive",
-      //   title: "Uh oh! Something went wrong.",
-      //   description: "There was a problem with your request.",
-      // });
+      if (action == BUTTON_TEXT_INSERT) {
+        setAction(BUTTON_TEXT_UPDATE);
+      }
+
+      toast({
+        title: "Risultato inserito!",
+        description: "Hai inserito correttamente il risultato.",
+        className: "bg-green-700 text-white",
+      });
     } catch (error: any) {
-      console.log(error);
-      // toast({
-      //   variant: "destructive",
-      //   title: "Uh oh! Something went wrong.",
-      //   description: "There was a problem with your request.",
-      // });
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem with your request.",
+      });
     } finally {
       setLoading(false);
     }
@@ -132,13 +129,6 @@ export const MatchForm: React.FC<MatchFormProps> = ({ initialData }) => {
 
   return (
     <>
-      {/* <AlertModal
-        isOpen={open}
-        onClose={() => setOpen(false)}
-        onConfirm={onDelete}
-        loading={loading}
-      /> */}
-
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
