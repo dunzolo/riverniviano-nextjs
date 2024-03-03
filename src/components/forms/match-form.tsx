@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 // #NEXT
 import { useParams, useRouter } from "next/navigation";
 // #UI COMPONENTS
+import { useToast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -28,8 +29,14 @@ import {
 import { Match } from "@/models/Match";
 import { SquadGroup } from "@/models/SquadGroup";
 // #UTILS
-import { updatePoints } from "@/utils/utils";
-// import { useToast } from "../ui/use-toast";
+import {
+  dateFormatItalian,
+  timeFormatHoursMinutes,
+  updatePoints,
+} from "@/utils/utils";
+
+const BUTTON_TEXT_INSERT = "Inserisci";
+const BUTTON_TEXT_UPDATE = "Modifica";
 
 const formSchema = z.object({
   //utilizzo coerce per validazione su campo input di tipo numerico
@@ -48,22 +55,16 @@ interface MatchFormProps {
 }
 
 export const MatchForm: React.FC<MatchFormProps> = ({ initialData }) => {
-  const { day, squad_home, squad_away, score_home, score_away, hour, field } =
-    initialData;
-
-  const params = useParams();
   const router = useRouter();
-  // const { toast } = useToast();
+  const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const title = initialData ? "Modifica risultati" : "Inserisci risultati";
-  const description = initialData
-    ? "Modifica i risultati."
-    : "Inserisci i nuovi risultati";
-  const toastMessage = initialData
-    ? "Risultati aggiornati."
-    : "Risultati inseriti.";
-  const action = initialData.score_home ? "Modifica" : "Inserisci";
+  const [action, setAction] = useState(
+    initialData.score_home ? BUTTON_TEXT_UPDATE : BUTTON_TEXT_INSERT
+  );
+
+  const { day, squad_home, squad_away, score_home, score_away, hour, field } =
+    initialData;
 
   const defaultValues = initialData
     ? initialData
@@ -80,21 +81,6 @@ export const MatchForm: React.FC<MatchFormProps> = ({ initialData }) => {
   const onSubmit = async (data: ProductFormValues) => {
     const outcome = `${data.score_home} - ${data.score_away}`;
 
-    const matchesBySquadHome: Match = await getMatchesBySquad(squad_home.id);
-    const matchesBySquadAway: Match = await getMatchesBySquad(squad_away.id);
-
-    const squadHome: SquadGroup[] = await getSquadsByGroup(
-      squad_home.group,
-      squad_home.id
-    );
-    const squadAway: SquadGroup[] = await getSquadsByGroup(
-      squad_away.group,
-      squad_away.id
-    );
-
-    updatePoints(matchesBySquadHome, squadHome[0], squad_home.group, true);
-    updatePoints(matchesBySquadAway, squadAway[0], squad_away.group, false);
-
     try {
       setLoading(true);
 
@@ -105,21 +91,37 @@ export const MatchForm: React.FC<MatchFormProps> = ({ initialData }) => {
         outcome
       );
 
-      //TODO: gestire le notifiche toast all'inserimento/modifica/cancellazione di una squadra
-      // router.refresh();
-      // router.push(`/admin/squad`);
-      // toast({
-      //   variant: "destructive",
-      //   title: "Uh oh! Something went wrong.",
-      //   description: "There was a problem with your request.",
-      // });
+      const matchesBySquadHome: Match = await getMatchesBySquad(squad_home.id);
+      const matchesBySquadAway: Match = await getMatchesBySquad(squad_away.id);
+
+      const squadHome: SquadGroup[] = await getSquadsByGroup(
+        squad_home.group,
+        squad_home.id
+      );
+
+      const squadAway: SquadGroup[] = await getSquadsByGroup(
+        squad_away.group,
+        squad_away.id
+      );
+
+      updatePoints(matchesBySquadHome, squadHome[0], squad_home.group, true);
+      updatePoints(matchesBySquadAway, squadAway[0], squad_away.group, false);
+
+      if (action == BUTTON_TEXT_INSERT) {
+        setAction(BUTTON_TEXT_UPDATE);
+      }
+
+      toast({
+        title: "Risultato inserito!",
+        description: "Hai inserito correttamente il risultato.",
+        className: "bg-green-700 text-white",
+      });
     } catch (error: any) {
-      console.log(error);
-      // toast({
-      //   variant: "destructive",
-      //   title: "Uh oh! Something went wrong.",
-      //   description: "There was a problem with your request.",
-      // });
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem with your request.",
+      });
     } finally {
       setLoading(false);
     }
@@ -127,13 +129,6 @@ export const MatchForm: React.FC<MatchFormProps> = ({ initialData }) => {
 
   return (
     <>
-      {/* <AlertModal
-        isOpen={open}
-        onClose={() => setOpen(false)}
-        onConfirm={onDelete}
-        loading={loading}
-      /> */}
-
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -142,7 +137,14 @@ export const MatchForm: React.FC<MatchFormProps> = ({ initialData }) => {
           <Card key={null}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                📆 {hour} | {squad_home.category} | {squad_home.group}
+                📆&nbsp;{dateFormatItalian(day)}&nbsp;|&nbsp;
+                {timeFormatHoursMinutes(hour)}
+                <p className="text-xs text-muted-foreground pt-1">
+                  Categoria:&nbsp;
+                  <span className="font-bold">{squad_home.category}</span>
+                  &nbsp;-&nbsp;Girone:&nbsp;
+                  <span className="font-bold">{squad_home.group}</span>
+                </p>
               </CardTitle>
             </CardHeader>
             <CardContent>
