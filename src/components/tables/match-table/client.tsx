@@ -91,7 +91,10 @@ export const MatchClient: React.FC<MatchClientProps> = ({ data }) => {
                         </CardContent>
                       </Card>
                     </DialogTrigger>
-                    <DialogContent className="lg:max-w-[500px] w-[80%] rounded">
+                    <DialogContent
+                      className="lg:max-w-[500px] w-[80%] rounded"
+                      onOpenAutoFocus={(e) => e.preventDefault()}
+                    >
                       <DialogHeader>
                         <DialogTitle>Modifica risultato</DialogTitle>
                         <DialogDescription>
