@@ -14,7 +14,7 @@ type Props = {
 
 export const getServerSideProps: GetServerSideProps = async () => {
   try {
-    const groups = await getRankingByGroup(['A', 'B', 'C', 'D']);
+    const groups = await getRankingByGroup(['A', 'B', 'C', 'D', 'E', 'F']);
     return {
       props: {
         groups
@@ -58,6 +58,18 @@ export default function page({ groups }: Props) {
     return acc;
   }, {});
 
+  const groupedData2014 = allData.reduce<{ [key: string]: SquadGroup[] }>((acc, curr) => {
+    if (curr.squad_id.category === "2014") {
+      const group = curr.squad_id.group;
+      // Verifica se acc[group] è già definito, altrimenti inizializza come array vuoto
+      if (!acc[group]) {
+        acc[group] = [];
+      }
+      acc[group].push(curr);
+    }
+    return acc;
+  }, {});
+
   return (
     <ScrollArea className="h-full">
       <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
@@ -74,9 +86,9 @@ export default function page({ groups }: Props) {
             <TabsTrigger value="pulcini_2014">2014</TabsTrigger>
           </TabsList>
           <TabsContent value="esordienti" className="space-y-4">
-            {Object.entries(groupedDataEsordienti).map(([group, data]) => (
-              <div key={group} className="grid gap-4 md:grid-cols-2">
-                <Card>
+            <div className="grid gap-4 md:grid-cols-2">
+              {Object.entries(groupedDataEsordienti).map(([group, data]) => (
+                <Card key={group}>
                   <CardHeader className="flex flex-row items-center justify-center space-y-0 p-2">
                     <CardTitle className="text-sm font-medium">
                       GIRONE {group}
@@ -90,13 +102,13 @@ export default function page({ groups }: Props) {
                     Classifica aggiornata
                   </div>
                 </Card>
-              </div>
-            ))}
+              ))}
+            </div>
           </TabsContent>
           <TabsContent value="pulcini_2013" className="space-y-4">
-            {Object.entries(groupedData2013).map(([group, data]) => (
-              <div key={group} className="grid gap-4 md:grid-cols-2">
-                <Card>
+            <div className="grid gap-4 md:grid-cols-2">
+              {Object.entries(groupedData2013).map(([group, data]) => (
+                <Card key={group}>
                   <CardHeader className="flex flex-row items-center justify-center space-y-0 p-2">
                     <CardTitle className="text-sm font-medium">
                       GIRONE {group}
@@ -110,8 +122,28 @@ export default function page({ groups }: Props) {
                     Classifica aggiornata
                   </div>
                 </Card>
-              </div>
-            ))}
+              ))}
+            </div>
+          </TabsContent>
+          <TabsContent value="pulcini_2014" className="space-y-4">
+            <div className="grid gap-4 md:grid-cols-2">
+              {Object.entries(groupedData2014).map(([group, data]) => (
+                <Card key={group}>
+                  <CardHeader className="flex flex-row items-center justify-center space-y-0 p-2">
+                    <CardTitle className="text-sm font-medium">
+                      GIRONE {group}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-2">
+                    <GroupClient data={data} />
+                  </CardContent>
+                  <div className="flex-1 text-sm text-muted-foreground text-center space-x-2 py-4">
+                    {/* //TODO: inserire testo in riferimento al girone */}
+                    Classifica aggiornata
+                  </div>
+                </Card>
+              ))}
+            </div>
           </TabsContent>
         </Tabs>
       </div>
