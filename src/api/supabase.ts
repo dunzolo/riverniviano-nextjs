@@ -13,7 +13,7 @@ export const getAllSquads = async () => {
 };
 
 /**
- * Recupera le singole categorie dalla risposta della query e rimuovi i duplicati
+ * Recupera le categorie dalla risposta della query e rimuovi i duplicati
  * @returns
  */
 export const getAllCategories = async () => {
@@ -30,6 +30,10 @@ export const getAllCategories = async () => {
   return [];
 };
 
+/**
+ * Recupera i giorni dalla risposta della query e rimuovi i duplicati
+ * @returns
+ */
 export const getAllDays = async (): Promise<string[]> => {
   const response = await supabase.from("match").select("day");
 
@@ -42,6 +46,11 @@ export const getAllDays = async (): Promise<string[]> => {
   return [];
 };
 
+/**
+ * Recupera l'elenco delle squadre in base alla categoria
+ * @param category La categoria per cui vuoi filtrare
+ * @returns 
+ */
 export const getSquadsByCategory = async (
   category: string
 ): Promise<Squad[]> => {
@@ -53,9 +62,9 @@ export const getSquadsByCategory = async (
 };
 
 /**
- * 
- * @param group 
- * @param id 
+ * Recupera l'elenco delle squadre dalla tabella group
+ * @param group Lettera del gruppo per cui vuoi filtrare
+ * @param id ID della squadra per cui vuoi filtrare
  * @returns 
  */
 export const getSquadsByGroup = async (group: string, id?: string) => {
@@ -71,8 +80,8 @@ export const getSquadsByGroup = async (group: string, id?: string) => {
 };
 
 /**
- * 
- * @param groups
+ * Recupera tutti i record dalle tabelle dei gironi
+ * @param groups Array di lettere dei gironi per cui vuoi filtrare
  * @returns 
  */
 export const getRankingByGroup = async (groups: string[]): Promise<SquadGroup[][]> => {
@@ -84,8 +93,8 @@ export const getRankingByGroup = async (groups: string[]): Promise<SquadGroup[][
 };
 
 /**
- * 
- * @param date 
+ * Recupera tutti i match in base alla giornata del calendario
+ * @param date Data del calendario per cui vuoi filtrare
  * @returns 
  */
 export const getMatchesByDate = async (date: string): Promise<Match> => {
@@ -98,6 +107,11 @@ export const getMatchesByDate = async (date: string): Promise<Match> => {
   return response.data ?? [];
 };
 
+/**
+ * Recupera tutti i match che deve disputare un determinata squadra all'interno del torneo
+ * @param id ID della squadra per cui vuoi recuperare i match
+ * @returns 
+ */
 export const getMatchesBySquad = async (id: string): Promise<Match> => {
   const response = await supabase
     .from("match")
@@ -107,6 +121,10 @@ export const getMatchesBySquad = async (id: string): Promise<Match> => {
   return response.data ?? [];
 };
 
+/**
+ * Recupera tutti match del calendario che hanno presente un risultato inserito
+ * @returns 
+ */
 export const getMatchesWithResult = async (): Promise<MatchDatum[]> => {
   const response = await supabase
     .from("match")
@@ -118,6 +136,14 @@ export const getMatchesWithResult = async (): Promise<MatchDatum[]> => {
   return response.data ?? [];
 };
 
+/**
+ * Crea una nuova partita all'interno del calendario del torneo in base al form che hai compilato
+ * @param date Giorno in cui verrà giocata la partita
+ * @param hour Orario in cui verrà giocata la partita
+ * @param selectedSquadHome ID della squadra che giocherà in casa
+ * @param selectedSquadAway ID della squadra che giocherà in trasferta
+ * @param field Campo in cui verrà giocata la partita
+ */
 export const createMatch = async (
   date: string,
   hour: string,
@@ -141,9 +167,9 @@ export const createMatch = async (
  * Crea la squadra con nome, categoria e gruppo
  * NB: il logo è da inserire direttamente da DB
  * @param id 
- * @param name nome della squadra
- * @param category categoria della squadra
- * @param group girone
+ * @param name Nome della squadra che verrà inserita
+ * @param category Categoria della squadra che verrà inserita
+ * @param group Girone della squadra che verrà inserita
  * @returns 
  */
 export const createSquad = async (
@@ -164,6 +190,13 @@ export const createSquad = async (
   return response;
 };
 
+/**
+ * Aggiorna i valori della squadra selezionata
+ * @param tableName Tabella in cui è presente la squadra che deve essere modificata
+ * @param newData Valori aggiornati della squadra selezionata
+ * @param recordId ID della squadra selezionata
+ * @returns 
+ */
 export const updateSquad = async (
   tableName: string,
   newData: string,
@@ -176,6 +209,13 @@ export const updateSquad = async (
   return response.data ?? [];
 };
 
+/**
+ * Aggiorna il risultato della partita selezionata
+ * @param id ID della partita selezioanta
+ * @param score_home Goal segnati dalla squadra di casa
+ * @param score_away Goal segnati dalla squadra in trasferta
+ * @param outcome Risultato finale della partita
+ */
 export const updateResult = async (
   id: string,
   score_home: number,
@@ -188,6 +228,15 @@ export const updateResult = async (
     .eq("id", id);
 };
 
+/**
+ * Aggiorni i punteggi del girone in base ai risultati della partita inserita
+ * @param group Girone della squadra
+ * @param id ID della squadra
+ * @param points Punteggio totale della squadra
+ * @param goal_scored Goal totali segnati dalla squadra
+ * @param goal_conceded Goal totali subiti dalla squadra
+ * @param goal_difference Differenza reti della squadra
+ */
 export const updatePointsGroup = async (
   group: string,
   id: string,
