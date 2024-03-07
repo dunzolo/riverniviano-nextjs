@@ -1,12 +1,18 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-import DashboardLayout from "@/components/layouts/AdminLayout";
+// #REACT
 import { GetServerSideProps } from "next";
-import { getRankingByGroup, getSquadsByGroup } from "@/api/supabase";
-import { SquadGroup } from "@/models/SquadGroup";
+// # LAYOUT
+import DashboardLayout from "@/components/layouts/AdminLayout";
+// #UI COMPONENTS
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { GroupClient } from "@/components/tables/group-table/client";
+import { ScrollArea } from "@/components/ui/scroll-area";
+// # SUPABASE
+import { getRankingByGroup } from "@/api/supabase";
+// # MODELS
+import { SquadGroup } from "@/models/SquadGroup";
+// # UTILS
+import { getGroupedData } from "@/utils/utils";
 
 type Props = {
   groups: SquadGroup[][]
@@ -32,43 +38,9 @@ page.getLayout = (page: any) => <DashboardLayout>{page}</DashboardLayout>;
 export default function page({ groups }: Props) {
   const allData = (groups as SquadGroup[][]).flat().reduce<SquadGroup[]>((acc, curr) => acc.concat(curr), []);
 
-  // TODO: inserire all'interno di una funzione passando i parametri 
-  // Filtra gli oggetti in base al campo "category"
-  const groupedDataEsordienti = allData.reduce<{ [key: string]: SquadGroup[] }>((acc, curr) => {
-    if (curr.squad_id.category === "ESORDIENTI") {
-      const group = curr.squad_id.group;
-      // Verifica se acc[group] è già definito, altrimenti inizializza come array vuoto
-      if (!acc[group]) {
-        acc[group] = [];
-      }
-      acc[group].push(curr);
-    }
-    return acc;
-  }, {});
-
-  const groupedData2013 = allData.reduce<{ [key: string]: SquadGroup[] }>((acc, curr) => {
-    if (curr.squad_id.category === "2013") {
-      const group = curr.squad_id.group;
-      // Verifica se acc[group] è già definito, altrimenti inizializza come array vuoto
-      if (!acc[group]) {
-        acc[group] = [];
-      }
-      acc[group].push(curr);
-    }
-    return acc;
-  }, {});
-
-  const groupedData2014 = allData.reduce<{ [key: string]: SquadGroup[] }>((acc, curr) => {
-    if (curr.squad_id.category === "2014") {
-      const group = curr.squad_id.group;
-      // Verifica se acc[group] è già definito, altrimenti inizializza come array vuoto
-      if (!acc[group]) {
-        acc[group] = [];
-      }
-      acc[group].push(curr);
-    }
-    return acc;
-  }, {});
+  const groupedDataEsordienti = getGroupedData(allData, "ESORDIENTI");
+  const groupedData2013 = getGroupedData(allData, "2013");
+  const groupedData2014 = getGroupedData(allData, "2014");
 
   return (
     <ScrollArea className="h-full">
@@ -80,7 +52,6 @@ export default function page({ groups }: Props) {
         </div>
         <Tabs defaultValue="esordienti" className="space-y-4">
           <TabsList>
-            {/* //TODO: inserire tabs in base alle categorie essendo presenti più gironi per categorie */}
             <TabsTrigger value="esordienti">Esordienti</TabsTrigger>
             <TabsTrigger value="pulcini_2013">2013</TabsTrigger>
             <TabsTrigger value="pulcini_2014">2014</TabsTrigger>

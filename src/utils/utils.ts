@@ -77,3 +77,20 @@ export const updatePoints = async (
     squad.goal_difference
   );
 };
+
+export const getGroupedData = (data: SquadGroup[], category: string) => {
+  // Filtra gli oggetti in base al campo "category"
+  const groupedDataEsordienti = data.reduce<{ [key: string]: SquadGroup[] }>((acc, curr) => {
+    if (curr.squad_id.category === category) {
+      const group = curr.squad_id.group;
+      // Verifica se acc[group] è già definito, altrimenti inizializza come array vuoto
+      if (!acc[group]) {
+        acc[group] = [];
+      }
+      acc[group].push(curr);
+    }
+    return acc;
+  }, {});
+  
+  return groupedDataEsordienti;
+}
