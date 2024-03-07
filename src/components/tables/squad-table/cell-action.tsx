@@ -15,7 +15,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
-  const onConfirm = async () => {};
+  const onConfirm = async () => { };
 
   return (
     <>
@@ -26,12 +26,14 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
         loading={loading}
       /> */}
 
-      <Button className="mr-2" onClick={() => router.push(`/dashboard/user/${data.id}`)}>
-        <Edit className="mr-2 h-4 w-4" /> Update
-      </Button>
-      <Button className="bg-red-700" onClick={() => setOpen(true)}>
-        <Trash className="mr-2 h-4 w-4" /> Delete
-      </Button>
+      <div className="flex">
+        <Button className="mr-2" onClick={() => router.push(`/dashboard/user/${data.id}`)}>
+          <Edit className="h-4 w-4 sm:mr-2" /> <span className="hidden sm:!hidden">Update</span>
+        </Button>
+        <Button className="bg-red-700" onClick={() => setOpen(true)}>
+          <Trash className="h-4 w-4 sm:mr-2" /> <span className="hidden sm:!hidden">Delete</span>
+        </Button>
+      </div>
     </>
   );
 };
