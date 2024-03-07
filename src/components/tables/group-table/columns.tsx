@@ -1,6 +1,5 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
-import { Checkbox } from "@/components/ui/checkbox";
 import { SquadGroup } from "@/models/SquadGroup";
 
 export const columns: ColumnDef<SquadGroup>[] = [

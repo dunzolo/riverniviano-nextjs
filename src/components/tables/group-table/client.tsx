@@ -1,7 +1,10 @@
 "use client";
-import { DataTable } from "@/components/ui/data-table";
-import { columns } from "./columns";
+// #MODELS
 import { SquadGroup } from "@/models/SquadGroup";
+// #UI COMPONENTS
+import { DataTable } from "@/components/ui/data-table";
+// #COLUMNS
+import { columns } from "./columns";
 
 interface GroupClientProps {
   data: SquadGroup[];

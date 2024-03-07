@@ -63,15 +63,16 @@ export const MatchForm: React.FC<MatchFormProps> = ({ initialData }) => {
     initialData.score_home ? BUTTON_TEXT_UPDATE : BUTTON_TEXT_INSERT
   );
 
+  // faccio il destructuring per evitare di scrivere ogni volta initialData.day, ecc...
   const { day, squad_home, squad_away, score_home, score_away, hour, field } =
     initialData;
 
   const defaultValues = initialData
     ? initialData
     : {
-        score_home: 0,
-        score_away: 0,
-      };
+      score_home: 0,
+      score_away: 0,
+    };
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(formSchema),
@@ -84,6 +85,7 @@ export const MatchForm: React.FC<MatchFormProps> = ({ initialData }) => {
     try {
       setLoading(true);
 
+      // aggiorno il risultato della partita
       await updateResult(
         initialData.id,
         data.score_home,
@@ -91,9 +93,11 @@ export const MatchForm: React.FC<MatchFormProps> = ({ initialData }) => {
         outcome
       );
 
+      // recupero tutti i match delle due squadre coinvolte
       const matchesBySquadHome: Match = await getMatchesBySquad(squad_home.id);
       const matchesBySquadAway: Match = await getMatchesBySquad(squad_away.id);
 
+      // recupero i dati della classifica del rispettivo girone
       const squadHome: SquadGroup[] = await getSquadsByGroup(
         squad_home.group,
         squad_home.id
@@ -104,6 +108,8 @@ export const MatchForm: React.FC<MatchFormProps> = ({ initialData }) => {
         squad_away.id
       );
 
+      // aggiorno il punteggio della classifica del girone
+      // i valori true e false servono per conteggaire correttamente i goal segnati dalle squadre
       updatePoints(matchesBySquadHome, squadHome[0], squad_home.group, true);
       updatePoints(matchesBySquadAway, squadAway[0], squad_away.group, false);
 
