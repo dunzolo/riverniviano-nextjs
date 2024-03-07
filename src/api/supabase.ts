@@ -1,7 +1,12 @@
 import { Match, MatchDatum } from "@/models/Match";
 import { Squad } from "@/models/Squad";
+import { SquadGroup } from "@/models/SquadGroup";
 import { supabase } from "@/supabase/supabase";
 
+/**
+ * Recuperare l'elenco di tutte le squadre presenti
+ * @returns 
+ */
 export const getAllSquads = async () => {
   const response = await supabase.from("squads").select("*");
   return response.data ?? [];
@@ -47,6 +52,12 @@ export const getSquadsByCategory = async (
   return response.data ?? [];
 };
 
+/**
+ * 
+ * @param group 
+ * @param id 
+ * @returns 
+ */
 export const getSquadsByGroup = async (group: string, id?: string) => {
   let query = supabase
     .from(`group_${group}`)
@@ -59,6 +70,24 @@ export const getSquadsByGroup = async (group: string, id?: string) => {
   return response.data ?? [];
 };
 
+/**
+ * 
+ * @param groups
+ * @returns 
+ */
+export const getRankingByGroup = async (groups: string[]): Promise<SquadGroup[][]> => {
+  const responses = await Promise.all(groups.map(async (group) => {
+    const { data } = await supabase.from(`group_${group}`).select("*, squad_id(*)").order("points", {ascending: false}).order("goal_difference", {ascending: false})
+    return data as SquadGroup[];
+  }));
+  return responses;
+};
+
+/**
+ * 
+ * @param date 
+ * @returns 
+ */
 export const getMatchesByDate = async (date: string): Promise<Match> => {
   const response = await supabase
     .from("match")
