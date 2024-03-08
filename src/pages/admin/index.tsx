@@ -68,7 +68,7 @@ export default function page({ groups }: Props) {
                   <CardContent className="p-2">
                     <GroupClient data={data} />
                   </CardContent>
-                  <div className="flex-1 text-sm text-muted-foreground text-center space-x-2 py-4">
+                  <div className="flex-1 text-sm text-muted-foreground text-center space-x-2 py-2">
                     {/* //TODO: inserire testo in riferimento al girone */}
                     Classifica aggiornata
                   </div>
@@ -88,7 +88,7 @@ export default function page({ groups }: Props) {
                   <CardContent className="p-2">
                     <GroupClient data={data} />
                   </CardContent>
-                  <div className="flex-1 text-sm text-muted-foreground text-center space-x-2 py-4">
+                  <div className="flex-1 text-sm text-muted-foreground text-center space-x-2 py-2">
                     {/* //TODO: inserire testo in riferimento al girone */}
                     Classifica aggiornata
                   </div>
@@ -108,7 +108,7 @@ export default function page({ groups }: Props) {
                   <CardContent className="p-2">
                     <GroupClient data={data} />
                   </CardContent>
-                  <div className="flex-1 text-sm text-muted-foreground text-center space-x-2 py-4">
+                  <div className="flex-1 text-sm text-muted-foreground text-center space-x-2 py-2">
                     {/* //TODO: inserire testo in riferimento al girone */}
                     Classifica aggiornata
                   </div>
