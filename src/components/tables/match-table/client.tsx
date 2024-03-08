@@ -27,12 +27,38 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useState } from "react";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 interface MatchClientProps {
   data: MatchDatum[];
 }
 
 export const MatchClient: React.FC<MatchClientProps> = ({ data }) => {
+  const [filterSquad, setFilterSquad] = useState('');
+  const [filterCategory, setFilterCategory] = useState('');
+
+  const handleFilterChangeSquad = (event: any) => {
+    const value = event.target.value;
+    setFilterSquad(value);
+  };
+
+  const handleFilterChangeCategory = (event: any) => {
+    const value = event.target.value;
+    setFilterCategory(value);
+  };
+
+  // Filtra i dati in base al campo "name"
+  console.log(filterSquad);
+  console.log(filterCategory);
+  const filterData = data.filter(
+    item => item.squad_home.name.toLowerCase().includes(filterSquad.toLowerCase()) ||
+      item.squad_away.name.toLowerCase().includes(filterSquad.toLowerCase()) &&
+      item.squad_away.category.toLowerCase().includes(filterCategory.toLowerCase())
+  );
+
+  console.log(filterData)
   const router = useRouter();
 
   return (
@@ -42,20 +68,24 @@ export const MatchClient: React.FC<MatchClientProps> = ({ data }) => {
           title={`Match inseriti (${data.length})`}
           description="elenco dei risultati inseriti nel torneo"
         />
-        <Button
-          className="text-xs md:text-sm"
-          onClick={() => router.push(`/admin/match/update`)}
-        >
-          <Plus className="mr-2 h-4 w-4" /> Inserisci risultati
-        </Button>
       </div>
       <Separator />
+      <div className="grid grid-cols-2 w-full items-center gap-1.5">
+        <div>
+          <Label>Nome squadra</Label>
+          <Input type="text" placeholder="Nnome della squadra" value={filterSquad} onChange={handleFilterChangeSquad} />
+        </div>
+        <div>
+          <Label>Categoria</Label>
+          <Input type="text" placeholder="Categoria della squadra" value={filterCategory} onChange={handleFilterChangeCategory} />
+        </div>
+      </div>
       <ScrollArea className="h-[60vh]">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {
             //TODO: inserire loghi delle squadre dentro la card
             data &&
-            data.map((singleMatch) => {
+            filterData.map((singleMatch) => {
               return (
                 <Dialog key={singleMatch.id}>
                   <DialogTrigger asChild>

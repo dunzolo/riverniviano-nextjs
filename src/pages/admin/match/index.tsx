@@ -28,12 +28,12 @@ page.getLayout = (page: any) => <DashboardLayout>{page}</DashboardLayout>;
 
 const breadcrumbItems = [{ title: "Match", link: "/admin/match" }];
 
-export default function page({matches} : Props) {
+export default function page({ matches }: Props) {
   return (
     <>
-      <div className="flex-1 space-y-4  p-4 md:p-8 pt-6">
+      <div className="flex-1 space-y-4  p-4 md:p-8">
         <BreadCrumb items={breadcrumbItems} />
-        <MatchClient data={matches}/>
+        <MatchClient data={matches} />
       </div>
     </>
   );

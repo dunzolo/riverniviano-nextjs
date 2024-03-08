@@ -96,9 +96,8 @@ export function DataTable<TData, TValue>({
       </div>
 
       <ScrollArea
-        className={`rounded-md border ${
-          isRanking ? "" : "h-[calc(80vh-204px)]"
-        }`}
+        className={`rounded-md border ${isRanking ? "" : "h-[calc(80vh-225px)]"
+          }`}
       >
         <Table className="relative">
           <TableHeader>
@@ -110,9 +109,9 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   );
                 })}
@@ -151,7 +150,7 @@ export function DataTable<TData, TValue>({
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
       {!isRanking ? (
-        <div className="flex items-center justify-end space-x-2 py-4">
+        <div className="flex items-center justify-end space-x-2">
           <div className="flex-1 text-sm text-muted-foreground">
             {table.getFilteredSelectedRowModel().rows.length} of{" "}
             {table.getFilteredRowModel().rows.length} row(s) selected.
