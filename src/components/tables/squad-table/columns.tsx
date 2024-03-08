@@ -20,8 +20,8 @@ export const columns: ColumnDef<Squad>[] = [
     accessorKey: "group",
     header: "GRUPPO",
   },
-  {
-    id: "actions",
-    cell: ({ row }) => <CellAction data={row.original} />,
-  },
+  // {
+  //   id: "actions",
+  //   cell: ({ row }) => <CellAction data={row.original} />,
+  // },
 ];
