@@ -4,7 +4,7 @@ import { SquadGroup } from "@/models/SquadGroup";
 
 /**
  * Funzione che converte la data in formato italiano
- * @param date
+ * @param date Data che vuoi convertire
  * @returns
  */
 export const dateFormatItalian = (date: string) => {
@@ -36,7 +36,7 @@ export const timeFormatHoursMinutes = (time: string) => {
  * @param matchesBySquad array di tutte le partite del torneo della squadra
  * @param squad squadra per cui devo aggiornare i dati della classfica
  * @param group girone della squadra
- * @param isHomeSquad
+ * @param isHomeSquad valore per indicare se è squadra casalinga
  */
 export const updatePoints = async (
   matchesBySquad: Match,
@@ -77,3 +77,21 @@ export const updatePoints = async (
     squad.goal_difference
   );
 };
+
+
+export const getGroupedData = (data: SquadGroup[], category: string) => {
+  // Filtra gli oggetti in base al campo "category"
+  const groupedDataEsordienti = data.reduce<{ [key: string]: SquadGroup[] }>((acc, curr) => {
+    if (curr.squad_id.category === category) {
+      const group = curr.squad_id.group;
+      // Verifica se acc[group] è già definito, altrimenti inizializza come array vuoto
+      if (!acc[group]) {
+        acc[group] = [];
+      }
+      acc[group].push(curr);
+    }
+    return acc;
+  }, {});
+  
+  return groupedDataEsordienti;
+}

@@ -1,23 +1,27 @@
 "use client";
+// #ZOD
 import * as z from "zod";
-import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+// #REACT
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+// #ICON
 import { Trash } from "lucide-react";
+// #NEXT
 import { useParams, useRouter } from "next/navigation";
+// #UI COMPONENTS
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Heading } from "@/components/ui/heading";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Separator } from "@/components/ui/separator";
-import { Heading } from "@/components/ui/heading";
 import {
   Select,
   SelectContent,
@@ -25,8 +29,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-// import { useToast } from "../ui/use-toast";
+// #SUPABASE
 import { createSquad } from "@/api/supabase";
+
 const formSchema = z.object({
   name: z.string().min(1, { message: "Devi inserire il nome della squadra" }),
   group: z
@@ -49,9 +54,9 @@ export const SquadForm: React.FC<SquadFormProps> = ({
   categories,
   totalSquad,
 }) => {
+
   const params = useParams();
   const router = useRouter();
-  // const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const title = initialData ? "Modifica squadra" : "Crea squadra";
@@ -64,10 +69,10 @@ export const SquadForm: React.FC<SquadFormProps> = ({
   const defaultValues = initialData
     ? initialData
     : {
-        name: "",
-        category: "",
-        group: "",
-      };
+      name: "",
+      category: "",
+      group: "",
+    };
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(formSchema),
@@ -75,7 +80,6 @@ export const SquadForm: React.FC<SquadFormProps> = ({
   });
 
   const onSubmit = async (data: ProductFormValues) => {
-    console.log("qui");
 
     try {
       setLoading(true);
@@ -117,12 +121,6 @@ export const SquadForm: React.FC<SquadFormProps> = ({
 
   return (
     <>
-      {/* <AlertModal
-        isOpen={open}
-        onClose={() => setOpen(false)}
-        onConfirm={onDelete}
-        loading={loading}
-      /> */}
       <div className="flex items-center justify-between">
         <Heading title={title} description={description} />
         {initialData && (
@@ -181,7 +179,6 @@ export const SquadForm: React.FC<SquadFormProps> = ({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {/* @ts-ignore  */}
                       {categories.map((category) => (
                         <SelectItem key={category} value={category}>
                           {category}
