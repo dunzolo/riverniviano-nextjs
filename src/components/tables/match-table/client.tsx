@@ -42,12 +42,6 @@ export const MatchClient: React.FC<MatchClientProps> = ({ data }) => {
           title={`Match inseriti (${data.length})`}
           description="elenco dei risultati inseriti nel torneo"
         />
-        <Button
-          className="text-xs md:text-sm"
-          onClick={() => router.push(`/admin/match/update`)}
-        >
-          <Plus className="mr-2 h-4 w-4" /> Inserisci risultati
-        </Button>
       </div>
       <Separator />
       <ScrollArea className="h-[60vh]">

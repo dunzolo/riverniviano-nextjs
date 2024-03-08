@@ -27,12 +27,12 @@ export const SquadClient: React.FC<SquadClientProps> = ({ data }) => {
           title={`Squadre (${data.length})`}
           description="elenco delle squadre iscritte al torneo"
         />
-        <Button
+        {/* <Button
           className="text-xs md:text-sm"
           onClick={() => router.push(`/admin/squad/create`)}
         >
           <Plus className="mr-2 h-4 w-4" /> Add New
-        </Button>
+        </Button> */}
       </div>
       <Separator />
       <DataTable searchKeyName="name" searchKeyCategory="category" columns={columns} data={data} />

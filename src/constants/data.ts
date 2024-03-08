@@ -19,22 +19,37 @@ export const navItems: NavItem[] = [
     icon: "trophy",
     label: "match",
   },
-  {
-    title: "Profile",
-    href: "/dashboard/profile",
-    icon: "profile",
-    label: "profile",
-  },
-  {
-    title: "Kanban",
-    href: "/dashboard/kanban",
-    icon: "kanban",
-    label: "kanban",
-  },
-  {
-    title: "Login",
-    href: "/",
-    icon: "login",
-    label: "login",
-  },
+  // {
+  //   title: "Profile",
+  //   href: "/dashboard/profile",
+  //   icon: "profile",
+  //   label: "profile",
+  // },
+  // {
+  //   title: "Kanban",
+  //   href: "/dashboard/kanban",
+  //   icon: "kanban",
+  //   label: "kanban",
+  // },
+  // {
+  //   title: "Login",
+  //   href: "/",
+  //   icon: "login",
+  //   label: "login",
+  // },
 ];
+
+export const footerAdminItems : NavItem[] = [
+  {
+    title: "Dashboard",
+    href: "/admin",
+    icon: "dashboard",
+    label: "Dashboard",
+  },
+  {
+    title: "Inserisci",
+    href: "/admin/match/update",
+    icon: "pencil",
+    label: "Inserisci",
+  }
+]

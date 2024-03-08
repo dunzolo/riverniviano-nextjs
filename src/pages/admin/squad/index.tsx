@@ -11,29 +11,29 @@ type Props = {
 
 export const getServerSideProps: GetServerSideProps = async () => {
   try {
-      const squads = await getAllSquads();
-      return {
-          props: {
-              squads,
-          },
-      };
+    const squads = await getAllSquads();
+    return {
+      props: {
+        squads,
+      },
+    };
   } catch (error) {
-      return {
-          notFound: true,
-      };
+    return {
+      notFound: true,
+    };
   }
 };
 
-page.getLayout = (page : any) => (
-    <DashboardLayout>{page}</DashboardLayout>
+page.getLayout = (page: any) => (
+  <DashboardLayout>{page}</DashboardLayout>
 );
 
 const breadcrumbItems = [{ title: "Squadre", link: "/admin/squad" }];
 
-export default function page({squads} : Props) {
+export default function page({ squads }: Props) {
   return (
     <>
-      <div className="flex-1 space-y-4  p-4 md:p-8 pt-6">
+      <div className="flex-1 space-y-4  p-4 md:p-8">
         <BreadCrumb items={breadcrumbItems} />
         <SquadClient data={squads} />
       </div>
