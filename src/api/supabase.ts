@@ -5,7 +5,7 @@ import { supabase } from "@/supabase/supabase";
 
 /**
  * Recuperare l'elenco di tutte le squadre presenti
- * @returns 
+ * @returns
  */
 export const getAllSquads = async () => {
   const response = await supabase.from("squads").select("*");
@@ -16,14 +16,12 @@ export const getAllSquads = async () => {
  * Recupera le categorie dalla risposta della query e rimuovi i duplicati
  * @returns
  */
-export const getAllCategories = async () => {
+export const getAllCategories = async (): Promise<string[]> => {
   const response = await supabase.from("squads").select("category");
 
   if (response.data) {
-    const categories = response.data.map((entry) => entry.category);
-    const uniqueCategories = categories.filter(
-      (category, index) => categories.indexOf(category) === index
-    );
+    const categories: string[] = response.data.map((entry) => entry.category);
+    const uniqueCategories = Array.from(new Set(categories)).sort();
     return uniqueCategories;
   }
 
@@ -49,7 +47,7 @@ export const getAllDays = async (): Promise<string[]> => {
 /**
  * Recupera l'elenco delle squadre in base alla categoria
  * @param category La categoria per cui vuoi filtrare
- * @returns 
+ * @returns
  */
 export const getSquadsByCategory = async (
   category: string
@@ -65,7 +63,7 @@ export const getSquadsByCategory = async (
  * Recupera l'elenco delle squadre dalla tabella group
  * @param group Lettera del gruppo per cui vuoi filtrare
  * @param id ID della squadra per cui vuoi filtrare
- * @returns 
+ * @returns
  */
 export const getSquadsByGroup = async (group: string, id?: string) => {
   let query = supabase
@@ -82,20 +80,28 @@ export const getSquadsByGroup = async (group: string, id?: string) => {
 /**
  * Recupera tutti i record dalle tabelle dei gironi
  * @param groups Array di lettere dei gironi per cui vuoi filtrare
- * @returns 
+ * @returns
  */
-export const getRankingByGroup = async (groups: string[]): Promise<SquadGroup[][]> => {
-  const responses = await Promise.all(groups.map(async (group) => {
-    const { data } = await supabase.from(`group_${group}`).select("*, squad_id(*)").order("points", {ascending: false}).order("goal_difference", {ascending: false})
-    return data as SquadGroup[];
-  }));
+export const getRankingByGroup = async (
+  groups: string[]
+): Promise<SquadGroup[][]> => {
+  const responses = await Promise.all(
+    groups.map(async (group) => {
+      const { data } = await supabase
+        .from(`group_${group}`)
+        .select("*, squad_id(*)")
+        .order("points", { ascending: false })
+        .order("goal_difference", { ascending: false });
+      return data as SquadGroup[];
+    })
+  );
   return responses;
 };
 
 /**
  * Recupera tutti i match in base alla giornata del calendario
  * @param date Data del calendario per cui vuoi filtrare
- * @returns 
+ * @returns
  */
 export const getMatchesByDate = async (date: string): Promise<Match> => {
   const response = await supabase
@@ -110,7 +116,7 @@ export const getMatchesByDate = async (date: string): Promise<Match> => {
 /**
  * Recupera tutti i match che deve disputare un determinata squadra all'interno del torneo
  * @param id ID della squadra per cui vuoi recuperare i match
- * @returns 
+ * @returns
  */
 export const getMatchesBySquad = async (id: string): Promise<Match> => {
   const response = await supabase
@@ -123,7 +129,7 @@ export const getMatchesBySquad = async (id: string): Promise<Match> => {
 
 /**
  * Recupera tutti match del calendario che hanno presente un risultato inserito
- * @returns 
+ * @returns
  */
 export const getMatchesWithResult = async (): Promise<MatchDatum[]> => {
   const response = await supabase
@@ -195,7 +201,7 @@ export const createSquad = async (
  * @param tableName Tabella in cui è presente la squadra che deve essere modificata
  * @param newData Valori aggiornati della squadra selezionata
  * @param recordId ID della squadra selezionata
- * @returns 
+ * @returns
  */
 export const updateSquad = async (
   tableName: string,
