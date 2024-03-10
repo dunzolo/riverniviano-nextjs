@@ -156,6 +156,9 @@ export const MatchClient: React.FC<MatchClientProps> = ({
                     <DialogContent
                       className="lg:max-w-[500px] w-[80%] rounded"
                       onOpenAutoFocus={(e) => e.preventDefault()}
+                      onInteractOutside={(e) => {
+                        e.preventDefault();
+                      }}
                     >
                       <DialogHeader>
                         <DialogTitle>Modifica risultato</DialogTitle>
