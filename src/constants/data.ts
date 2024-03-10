@@ -39,7 +39,7 @@ export const navItems: NavItem[] = [
   // },
 ];
 
-export const footerAdminItems : NavItem[] = [
+export const footerAdminItems: NavItem[] = [
   {
     title: "Dashboard",
     href: "/admin",
@@ -47,9 +47,9 @@ export const footerAdminItems : NavItem[] = [
     label: "Dashboard",
   },
   {
-    title: "Inserisci",
+    title: "Aggiungi",
     href: "/admin/match/update",
     icon: "pencil",
-    label: "Inserisci",
-  }
-]
+    label: "Aggiungi",
+  },
+];
