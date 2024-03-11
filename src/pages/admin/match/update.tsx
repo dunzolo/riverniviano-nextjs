@@ -89,7 +89,7 @@ export default function Update({ daysProps }: Props) {
           </SelectContent>
         </Select>
 
-        <div className="md:grid md:grid-cols-4 gap-8">
+        <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-8">
           {selectedDay.map((item) => {
             return <MatchForm initialData={item} key={item.id} />;
           })}

@@ -44,6 +44,14 @@ export const getAllDays = async (): Promise<string[]> => {
   return [];
 };
 
+export const getAllMatch = async (): Promise<MatchDatum[]> => {
+  const response = await supabase
+    .from("match")
+    .select("*, squad_home(*), squad_away(*)")
+    .order("id", { ascending: true });
+  return response.data ?? [];
+}
+
 /**
  * Recupera l'elenco delle squadre in base alla categoria
  * @param category La categoria per cui vuoi filtrare
@@ -123,6 +131,20 @@ export const getMatchesBySquad = async (id: string): Promise<Match> => {
     .from("match")
     .select("*, squad_home(*), squad_away(*)")
     .or(`squad_home.eq.${id}, squad_away.eq.${id}`);
+
+  return response.data ?? [];
+};
+
+/**
+ * Recupera il singolo match
+ * @param id ID del match che vuoi recuperare
+ * @returns
+ */
+export const getMatchesById = async (id: string): Promise<Match> => {
+  const response = await supabase
+    .from("match")
+    .select("*, squad_home(*), squad_away(*)")
+    .eq('id', id);
 
   return response.data ?? [];
 };
