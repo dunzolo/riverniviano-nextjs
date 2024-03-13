@@ -28,9 +28,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Match, MatchDatum } from "@/models/Match";
-import { getMatchesBySquad, getSquadsByGroup, updateResult } from "@/api/supabase";
+import {
+  getMatchesBySquad,
+  getSquadsByGroup,
+  updateMatch,
+  updateResult,
+} from "@/api/supabase";
 import { SquadGroup } from "@/models/SquadGroup";
-import { updatePoints } from "@/utils/utils";
+import { dateFormatItalian, updatePoints } from "@/utils/utils";
 
 const BUTTON_TEXT_INSERT = "Inserisci";
 const BUTTON_TEXT_UPDATE = "Aggiorna";
@@ -45,21 +50,22 @@ type ProductFormValues = z.infer<typeof formSchema>;
 
 interface SquadFormProps {
   initialData: MatchDatum;
+  fieldsData: string[];
 }
 
 export const SingleMatchForm: React.FC<SquadFormProps> = ({
+  fieldsData,
   initialData,
 }) => {
-
   const params = useParams();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const title = initialData ? "Modifica squadra" : "Crea squadra";
+  const title = initialData ? "Modifica match" : "Crea match";
   const description = initialData
-    ? "Modifica i dati di questa squadra."
-    : "Aggiungi una nuova squadra";
-  const toastMessage = initialData ? "Squadra aggiornata." : "Squadra creata.";
+    ? "Modifica i dati di questo match."
+    : "Aggiungi un nuovo match";
+  const toastMessage = initialData ? "Match aggiornato." : "Match creato.";
 
   const [action, setAction] = useState(
     initialData.score_home ? BUTTON_TEXT_UPDATE : BUTTON_TEXT_INSERT
@@ -68,10 +74,10 @@ export const SingleMatchForm: React.FC<SquadFormProps> = ({
   const defaultValues = initialData
     ? initialData
     : {
-      day: "",
-      hour: "",
-      field: ""
-    };
+        day: "",
+        hour: "",
+        field: "",
+      };
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(formSchema),
@@ -79,16 +85,15 @@ export const SingleMatchForm: React.FC<SquadFormProps> = ({
   });
 
   const onSubmit = async (data: ProductFormValues) => {
-
     try {
       setLoading(true);
+
+      await updateMatch(initialData.id, data.day, data.hour, data.field);
 
       if (action == BUTTON_TEXT_INSERT) {
         setAction(BUTTON_TEXT_UPDATE);
       }
-
     } catch (error: any) {
-
     } finally {
       setTimeout(() => {
         setLoading(false);
@@ -103,38 +108,42 @@ export const SingleMatchForm: React.FC<SquadFormProps> = ({
         <Heading title={title} description={description} />
       </div>
       <Separator />
+      <div>
+        <p className="text-muted-foreground">
+          ➡️ Categoria:{" "}
+          <span className="font-bold">{initialData.squad_home.category}</span> -
+          Girone:{" "}
+          <span className="font-bold">{initialData.squad_home.group}</span>
+        </p>
+        <p>
+          {initialData.squad_home.name} {initialData.score_home}
+        </p>
+        <p>
+          {initialData.squad_away.name} {initialData.score_away}
+        </p>
+      </div>
+      <Separator />
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-8 w-full"
         >
-          <div className="md:grid md:grid-cols-3 gap-8">
-
+          <div className="md:grid md:grid-cols-2 gap-8">
             {/* //TODO: inserire loghi */}
             {/* //TODO: in fase di creazione devono vedersi i campi compilabili */}
-            <div>
-              {initialData.squad_home.name} {initialData.score_home}
-            </div>
-            <div>
-              {initialData.squad_away.name} {initialData.score_away}
-            </div>
-            <div>
-              {initialData.squad_home.category} | {initialData.squad_home.group}
-            </div>
 
-            {/* //TODO: inserire emoji nelle label */}
             <div className="flex gap-4">
               <FormField
                 control={form.control}
-                name="hour"
+                name="day"
                 render={({ field }) => (
                   <FormItem className="w-1/2">
-                    <FormLabel>Orario</FormLabel>
+                    <FormLabel>🗓 Giorno</FormLabel>
                     <FormControl>
                       <Input
-                        type="time"
+                        type="date"
                         disabled={loading}
-                        placeholder="Inserisci l'orario"
+                        placeholder="Inserisci il giorno"
                         {...field}
                       />
                     </FormControl>
@@ -144,15 +153,15 @@ export const SingleMatchForm: React.FC<SquadFormProps> = ({
               />
               <FormField
                 control={form.control}
-                name="day"
+                name="hour"
                 render={({ field }) => (
                   <FormItem className="w-1/2">
-                    <FormLabel>Giorno</FormLabel>
+                    <FormLabel>⏱ Orario</FormLabel>
                     <FormControl>
                       <Input
-                        type="date"
+                        type="time"
                         disabled={loading}
-                        placeholder="Inserisci il giorno"
+                        placeholder="Inserisci l'orario"
                         {...field}
                       />
                     </FormControl>
@@ -169,13 +178,28 @@ export const SingleMatchForm: React.FC<SquadFormProps> = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Campo</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={loading}
-                      placeholder="Inserisci il campo"
-                      {...field}
-                    />
-                  </FormControl>
+                  <Select
+                    disabled={loading}
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          defaultValue={field.value}
+                          placeholder="Scegli il campo"
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {fieldsData.map((fields) => (
+                        <SelectItem key={fields} value={fields}>
+                          {fields}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
