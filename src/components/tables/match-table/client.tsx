@@ -121,67 +121,72 @@ export const MatchClient: React.FC<MatchClientProps> = ({
           {
             //TODO: inserire loghi delle squadre dentro la card
             data &&
-            filterData.map((singleMatch) => {
-              return (
-                <Dialog key={singleMatch.id}>
-                  <DialogTrigger asChild>
-                    <Card>
-                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">
-                          📆&nbsp;{dateFormatItalian(singleMatch.day)}
-                          &nbsp;|&nbsp;
-                          {timeFormatHoursMinutes(singleMatch.hour)}
-                          <p className="text-xs text-muted-foreground pt-1">
-                            Categoria:&nbsp;
-                            <span className="font-bold">
-                              {singleMatch.squad_home.category}
-                            </span>
-                            &nbsp;-&nbsp;Girone:&nbsp;
-                            <span className="font-bold">
-                              {singleMatch.squad_home.group}
-                            </span>
-                          </p>
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="text-2xl font-bold">
-                          {singleMatch.squad_home.name}&nbsp;
-                          {singleMatch.score_home}
-                        </div>
-                        <div className="text-2xl font-bold">
-                          {singleMatch.squad_away.name}&nbsp;
-                          {singleMatch.score_away}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </DialogTrigger>
-                  <DialogContent
-                    className="lg:max-w-[500px] w-[80%] rounded"
-                    onOpenAutoFocus={(e) => e.preventDefault()}
-                    onInteractOutside={(e) => {
-                      e.preventDefault();
-                    }}
-                  >
-                    <DialogHeader>
-                      <DialogTitle>Modifica risultato</DialogTitle>
-                      <DialogDescription>
-                        In questo pannello puoi modificare il risultato della
-                        partita selezionata
-                      </DialogDescription>
-                    </DialogHeader>
-                    <MatchForm
-                      initialData={singleMatch}
-                      key={singleMatch.id}
-                    />
-                    <DialogFooter>
-                      <Button asChild>
-                        <Link href={`/admin/match/${singleMatch.id}`}>Modifica match</Link>
-                      </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              );
-            })
+              filterData.map((singleMatch) => {
+                return (
+                  <Dialog key={singleMatch.id}>
+                    <DialogTrigger asChild>
+                      <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                          <CardTitle className="text-sm font-medium">
+                            📆&nbsp;{dateFormatItalian(singleMatch.day)}
+                            &nbsp;|&nbsp;
+                            {timeFormatHoursMinutes(singleMatch.hour)}
+                            <p className="text-xs text-muted-foreground pt-1">
+                              Categoria:&nbsp;
+                              <span className="font-bold">
+                                {singleMatch.squad_home.category}
+                              </span>
+                              &nbsp;-&nbsp;Girone:&nbsp;
+                              <span className="font-bold">
+                                {singleMatch.squad_home.group}
+                              </span>
+                            </p>
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="text-2xl font-bold">
+                            {singleMatch.squad_home.name}&nbsp;
+                            {singleMatch.score_home}
+                          </div>
+                          <div className="text-2xl font-bold">
+                            {singleMatch.squad_away.name}&nbsp;
+                            {singleMatch.score_away}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </DialogTrigger>
+                    <DialogContent
+                      className="lg:max-w-[500px] w-[80%] rounded"
+                      onOpenAutoFocus={(e) => e.preventDefault()}
+                      onInteractOutside={(e) => {
+                        e.preventDefault();
+                      }}
+                    >
+                      <DialogHeader>
+                        <DialogTitle>Modifica risultato</DialogTitle>
+                        <DialogDescription>
+                          In questo pannello puoi modificare il risultato della
+                          partita selezionata
+                        </DialogDescription>
+                      </DialogHeader>
+                      <MatchForm
+                        initialData={singleMatch}
+                        key={singleMatch.id}
+                      />
+                      {/* // posso modificare il data, orario e campo solamente se la partita non è stata ancora giocata */}
+                      {!singleMatch.score_home || !singleMatch.score_away ? (
+                        <DialogFooter>
+                          <Button asChild>
+                            <Link href={`/admin/match/${singleMatch.id}`}>
+                              Modifica match
+                            </Link>
+                          </Button>
+                        </DialogFooter>
+                      ) : null}
+                    </DialogContent>
+                  </Dialog>
+                );
+              })
           }
         </div>
       </ScrollArea>
