@@ -29,6 +29,22 @@ export const getAllCategories = async (): Promise<string[]> => {
 };
 
 /**
+ * Recuperare i nomi dei singoli campi da calcio
+ * @returns
+ */
+export const getAllDistinctFields = async (): Promise<string[]> => {
+  const response = await supabase.from("match").select("field");
+
+  if (response.data) {
+    const fields: string[] = response.data.map((entry) => entry.field);
+    const uniqueFileds = Array.from(new Set(fields)).sort();
+    return uniqueFileds;
+  }
+
+  return [];
+};
+
+/**
  * Recupera i giorni dalla risposta della query e rimuovi i duplicati
  * @returns
  */
@@ -42,6 +58,14 @@ export const getAllDays = async (): Promise<string[]> => {
   }
 
   return [];
+};
+
+export const getAllMatch = async (): Promise<MatchDatum[]> => {
+  const response = await supabase
+    .from("match")
+    .select("*, squad_home(*), squad_away(*)")
+    .order("id", { ascending: true });
+  return response.data ?? [];
 };
 
 /**
@@ -128,6 +152,20 @@ export const getMatchesBySquad = async (id: string): Promise<Match> => {
 };
 
 /**
+ * Recupera il singolo match
+ * @param id ID del match che vuoi recuperare
+ * @returns
+ */
+export const getMatchesById = async (id: string): Promise<Match> => {
+  const response = await supabase
+    .from("match")
+    .select("*, squad_home(*), squad_away(*)")
+    .eq("id", id);
+
+  return response.data ?? [];
+};
+
+/**
  * Recupera tutti match del calendario che hanno presente un risultato inserito
  * @returns
  */
@@ -166,6 +204,19 @@ export const createMatch = async (
       field: field,
     },
   ]);
+};
+
+export const updateMatch = async (
+  id: string,
+  day: string,
+  hour: string,
+  field: string
+) => {
+  const response = await supabase
+    .from("match")
+    .update({ day, hour, field })
+    .eq("id", id);
+  return response.data ?? [];
 };
 
 /**

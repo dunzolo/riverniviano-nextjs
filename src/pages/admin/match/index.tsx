@@ -1,8 +1,8 @@
-import { getAllCategories, getMatchesWithResult } from "@/api/supabase";
+import { getAllCategories, getAllMatch } from "@/api/supabase";
 import BreadCrumb from "@/components/Breadcrumb";
 import DashboardLayout from "@/components/layouts/AdminLayout";
 import { MatchClient } from "@/components/tables/match-table/client";
-import { Match, MatchDatum } from "@/models/Match";
+import { MatchDatum } from "@/models/Match";
 import { GetServerSideProps } from "next";
 
 type Props = {
@@ -12,7 +12,7 @@ type Props = {
 
 export const getServerSideProps: GetServerSideProps = async () => {
   try {
-    const matches = await getMatchesWithResult();
+    const matches = await getAllMatch();
     const categories = await getAllCategories();
     return {
       props: {

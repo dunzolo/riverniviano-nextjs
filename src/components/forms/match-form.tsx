@@ -36,7 +36,7 @@ import {
 } from "@/utils/utils";
 
 const BUTTON_TEXT_INSERT = "Inserisci";
-const BUTTON_TEXT_UPDATE = "Modifica";
+const BUTTON_TEXT_UPDATE = "Aggiorna";
 
 const formSchema = z.object({
   //utilizzo coerce per validazione su campo input di tipo numerico
@@ -70,9 +70,9 @@ export const MatchForm: React.FC<MatchFormProps> = ({ initialData }) => {
   const defaultValues = initialData
     ? initialData
     : {
-      score_home: 0,
-      score_away: 0,
-    };
+        score_home: 0,
+        score_away: 0,
+      };
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(formSchema),
@@ -141,12 +141,12 @@ export const MatchForm: React.FC<MatchFormProps> = ({ initialData }) => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 w-full mb-5"
+          className="space-y-8 w-full"
         >
           <Card key={null}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                📆&nbsp;{dateFormatItalian(day)}&nbsp;|&nbsp;
+                🗓&nbsp;{dateFormatItalian(day)}&nbsp;|&nbsp;
                 {timeFormatHoursMinutes(hour)}
                 <p className="text-xs text-muted-foreground pt-1">
                   Categoria:&nbsp;

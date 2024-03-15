@@ -18,6 +18,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -34,6 +35,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Link from "next/link";
 
 interface MatchClientProps {
   data: MatchDatum[];
@@ -78,8 +80,8 @@ export const MatchClient: React.FC<MatchClientProps> = ({
     <>
       <div className="flex items-start justify-between">
         <Heading
-          title={`Match inseriti (${data.length})`}
-          description="elenco dei risultati inseriti nel torneo"
+          title={`Match (${data.length})`}
+          description="elenco delle partite del torneo"
         />
       </div>
       <Separator />
@@ -88,7 +90,7 @@ export const MatchClient: React.FC<MatchClientProps> = ({
           <Label>Nome squadra</Label>
           <Input
             type="text"
-            placeholder="Nnome della squadra"
+            placeholder="Nome della squadra"
             value={filterSquad}
             onChange={handleFilterChangeSquad}
           />
@@ -171,6 +173,16 @@ export const MatchClient: React.FC<MatchClientProps> = ({
                         initialData={singleMatch}
                         key={singleMatch.id}
                       />
+                      {/* // posso modificare il data, orario e campo solamente se la partita non è stata ancora giocata */}
+                      {!singleMatch.score_home || !singleMatch.score_away ? (
+                        <DialogFooter>
+                          <Button asChild>
+                            <Link href={`/admin/match/${singleMatch.id}`}>
+                              Modifica match
+                            </Link>
+                          </Button>
+                        </DialogFooter>
+                      ) : null}
                     </DialogContent>
                   </Dialog>
                 );
