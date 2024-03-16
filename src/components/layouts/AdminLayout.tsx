@@ -1,8 +1,6 @@
 import AdminHeader from "@/components/header/AdminHeader";
-import AdminSidebar from "../sidebar/AdminSidebar";
 import { Toaster } from "@/components/ui/toaster";
-import AdminFooter from "../footer/AdminFooter";
-import { footerAdminItems } from "@/constants/data";
+import AdminSidebar from "../sidebar/AdminSidebar";
 
 const DashboardLayout = ({ children }: any) => {
   return (
@@ -10,10 +8,10 @@ const DashboardLayout = ({ children }: any) => {
       <AdminHeader />
       <div className="flex h-screen overflow-hidden">
         <AdminSidebar />
-        <main className="w-full pt-16">{children}</main>
+        <main className="w-full pt-16 mb-16">{children}</main>
         <Toaster />
       </div>
-      <AdminFooter items={footerAdminItems} />
+      {/* <AdminFooter items={footerAdminItems} /> */}
     </>
   );
 };

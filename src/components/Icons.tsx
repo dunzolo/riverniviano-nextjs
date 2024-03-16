@@ -1,6 +1,8 @@
+import { VSIcon } from "@/icons/VSIcon";
 import {
   AlertTriangle,
   ArrowRight,
+  Building,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -30,6 +32,7 @@ import {
   User,
   User2Icon,
   UserX2Icon,
+  Users,
   X,
 } from "lucide-react";
 
@@ -64,6 +67,9 @@ export const Icons = {
   laptop: Laptop,
   trophy: Trophy,
   pencil: Pencil,
+  groups: Users,
+  company: Building,
+  match: VSIcon,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"

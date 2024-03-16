@@ -2,17 +2,13 @@
 // #NEXT
 import { useRouter } from "next/navigation";
 // #ICON
-import { Plus } from "lucide-react";
 // #MODELS
 import { MatchDatum } from "@/models/Match";
 // #UTILS
 import { dateFormatItalian, timeFormatHoursMinutes } from "@/utils/utils";
 // #UI COMPONENTS
-import { Button } from "@/components/ui/button";
-import { Heading } from "@/components/ui/heading";
-import { Separator } from "@/components/ui/separator";
 import { MatchForm } from "@/components/forms/match-form";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
@@ -23,19 +19,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState } from "react";
-import { Label } from "@/components/ui/label";
+import { Heading } from "@/components/ui/heading";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
+import { useState } from "react";
 
 interface MatchClientProps {
   data: MatchDatum[];
@@ -116,7 +114,7 @@ export const MatchClient: React.FC<MatchClientProps> = ({
           </Select>
         </div>
       </div>
-      <ScrollArea className="h-[60vh]">
+      <ScrollArea className="h-[60vh] mb-16">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {
             //TODO: inserire loghi delle squadre dentro la card

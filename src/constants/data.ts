@@ -8,35 +8,29 @@ export const navItems: NavItem[] = [
     label: "Dashboard",
   },
   {
-    title: "Squadre",
-    href: "/admin/squad",
-    icon: "user",
+    title: "Tornei",
+    href: "/admin/tournaments",
+    icon: "trophy",
     label: "squadre",
   },
   {
     title: "Match",
     href: "/admin/match",
-    icon: "trophy",
+    icon: "match",
     label: "match",
   },
-  // {
-  //   title: "Profile",
-  //   href: "/dashboard/profile",
-  //   icon: "profile",
-  //   label: "profile",
-  // },
-  // {
-  //   title: "Kanban",
-  //   href: "/dashboard/kanban",
-  //   icon: "kanban",
-  //   label: "kanban",
-  // },
-  // {
-  //   title: "Login",
-  //   href: "/",
-  //   icon: "login",
-  //   label: "login",
-  // },
+  {
+    title: "Associazioni",
+    href: "/admin/companies",
+    icon: "company",
+    label: "squadre",
+  },
+  {
+    title: "Squadre",
+    href: "/admin/squad",
+    icon: "groups",
+    label: "squadre",
+  },
 ];
 
 export const footerAdminItems: NavItem[] = [
