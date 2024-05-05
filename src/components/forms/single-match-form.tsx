@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 // #NEXT
 import { useParams, useRouter } from "next/navigation";
+import Image from "next/image";
 // #UI COMPONENTS
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -27,23 +28,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Match, MatchDatum } from "@/models/Match";
-import {
-  getMatchesBySquad,
-  getSquadsByGroup,
-  updateMatch,
-  updateResult,
-} from "@/api/supabase";
-import { SquadGroup } from "@/models/SquadGroup";
-import { dateFormatItalian, updatePoints } from "@/utils/utils";
+// #MODELS
+import { MatchDatum } from "@/models/Match";
+// #SUPABSE
+import { updateMatch } from "@/api/supabase";
 
 const BUTTON_TEXT_INSERT = "Inserisci";
 const BUTTON_TEXT_UPDATE = "Aggiorna";
 
+// TODO: tipicizzazione sul campo field nullable
 const formSchema = z.object({
   day: z.string(),
   hour: z.string(),
-  field: z.string(),
+  field: z.string().nullable(),
 });
 
 type ProductFormValues = z.infer<typeof formSchema>;
@@ -88,17 +85,20 @@ export const SingleMatchForm: React.FC<SquadFormProps> = ({
     try {
       setLoading(true);
 
-      await updateMatch(initialData.id, data.day, data.hour, data.field);
+      await updateMatch(
+        initialData.id,
+        data.day,
+        data.hour,
+        data.field !== null ? data.field : undefined
+      );
 
       if (action == BUTTON_TEXT_INSERT) {
         setAction(BUTTON_TEXT_UPDATE);
       }
     } catch (error: any) {
     } finally {
-      setTimeout(() => {
-        setLoading(false);
-        router.refresh();
-      }, 1500);
+      setLoading(false);
+      router.refresh();
     }
   };
 
@@ -110,17 +110,39 @@ export const SingleMatchForm: React.FC<SquadFormProps> = ({
       <Separator />
       <div>
         <p className="text-muted-foreground">
-          ➡️ Categoria:{" "}
-          <span className="font-bold">{initialData.squad_home.category}</span> -
-          Girone:{" "}
-          <span className="font-bold">{initialData.squad_home.group}</span>
+          Categoria:{" "}
+          <span className="font-bold">{initialData.squad_home.category}</span>
+          {initialData.squad_home.show_label_group ? (
+            <>
+              - Girone:{" "}
+              <span className="font-bold">{initialData.squad_home.group}</span>
+            </>
+          ) : null}
         </p>
-        <p>
-          {initialData.squad_home.name} {initialData.score_home}
-        </p>
-        <p>
-          {initialData.squad_away.name} {initialData.score_away}
-        </p>
+        <div className="flex items-center text-2xl font-bold">
+          <Image
+            src={initialData.squad_home.logo}
+            alt={initialData.squad_home.name.toLowerCase()}
+            width={512}
+            height={512}
+            className="w-12 h-12"
+          />
+          <div className="flex justify-between w-full">
+            <span>{initialData.squad_home.name}</span>
+          </div>
+        </div>
+        <div className="flex items-center text-2xl font-bold">
+          <Image
+            src={initialData.squad_away.logo}
+            alt={initialData.squad_away.name.toLowerCase()}
+            width={512}
+            height={512}
+            className="w-12 h-12"
+          />
+          <div className="flex justify-between w-full">
+            <span>{initialData.squad_away.name}</span>
+          </div>
+        </div>
       </div>
       <Separator />
       <Form {...form}>
@@ -129,9 +151,6 @@ export const SingleMatchForm: React.FC<SquadFormProps> = ({
           className="space-y-8 w-full"
         >
           <div className="md:grid md:grid-cols-2 gap-8">
-            {/* //TODO: inserire loghi */}
-            {/* //TODO: in fase di creazione devono vedersi i campi compilabili */}
-
             <div className="flex gap-4">
               <FormField
                 control={form.control}
@@ -171,7 +190,6 @@ export const SingleMatchForm: React.FC<SquadFormProps> = ({
               />
             </div>
 
-            {/* //TODO: inserire select per selezione campo */}
             <FormField
               control={form.control}
               name="field"
@@ -181,13 +199,17 @@ export const SingleMatchForm: React.FC<SquadFormProps> = ({
                   <Select
                     disabled={loading}
                     onValueChange={field.onChange}
-                    value={field.value}
-                    defaultValue={field.value}
+                    value={field.value !== null ? field.value : undefined}
+                    defaultValue={
+                      field.value !== null ? field.value : undefined
+                    }
                   >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue
-                          defaultValue={field.value}
+                          defaultValue={
+                            field.value !== null ? field.value : undefined
+                          }
                           placeholder="Scegli il campo"
                         />
                       </SelectTrigger>

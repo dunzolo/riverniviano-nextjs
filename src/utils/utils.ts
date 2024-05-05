@@ -3,15 +3,28 @@ import { Match, MatchDatum } from "@/models/Match";
 import { SquadGroup } from "@/models/SquadGroup";
 
 /**
+ * Genera lo slug usando il nome del torneo
+ * @param name nome del torneo
+ * @returns
+ */
+export const generateSlug = (name: string) => {
+  return name
+    .toLowerCase() // Converti la stringa in minuscolo
+    .replace(/[^\w\s-]/g, "") // Rimuovi caratteri non alfanumerici, spazi e trattini
+    .trim() // Rimuovi spazi iniziali e finali
+    .replace(/\s+/g, "-") // Sostituisci gli spazi con trattini
+    .replace(/-+/g, "-"); // Rimuovi eventuali doppi trattini
+};
+
+/**
  * Funzione che converte la data in formato italiano
  * @param date Data che vuoi convertire
  * @returns
  */
-export const dateFormatItalian = (date: string) => {
+export const dateFormatItalian = (date: string, options: Object) => {
   const data = new Date(date);
 
-  //const opzioni = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-  const dataFormattata = data.toLocaleDateString("it-IT");
+  const dataFormattata = data.toLocaleDateString("it-IT", options);
 
   // Trasformare la prima lettera del giorno in maiuscolo
   const dataFormattataCapitalized =
@@ -36,13 +49,11 @@ export const timeFormatHoursMinutes = (time: string) => {
  * @param matchesBySquad array di tutte le partite del torneo della squadra
  * @param squad squadra per cui devo aggiornare i dati della classfica
  * @param group girone della squadra
- * @param isHomeSquad valore per indicare se è squadra casalinga
  */
-export const updatePoints = async (
-  matchesBySquad: Match,
+export const updatePointsSquad = async (
+  matches: Match,
   squad: SquadGroup,
-  group: string,
-  isHomeSquad: boolean
+  group: string
 ) => {
   //azzero ogni volta il punteggio per gestire le modifiche dei punteggi delle partite
   squad.goal_scored = 0;
@@ -50,20 +61,35 @@ export const updatePoints = async (
   squad.goal_difference = 0;
   squad.points = 0;
 
-  matchesBySquad.map((match: MatchDatum) => {
+  matches.forEach((match: MatchDatum) => {
     //assegno i punteggi quando la partita cointiene un risultato
     if (match.score_home != null && match.score_away != null) {
-      //verifico tramite booleano se la squadra ha giocato in casa oppure no per aggiornare la relativa classifica
-      squad.goal_scored += isHomeSquad ? match.score_home : match.score_away;
-      squad.goal_conceded += isHomeSquad ? match.score_away : match.score_home;
-      squad.goal_difference += squad.goal_scored - squad.goal_conceded;
+      // Se la mia squadra corrisponde alla squadra in trasferta controllo i punteggi trasferta (away)
+      if (match.squad_away.id === squad.squad_id.id) {
+        squad.goal_scored += match.score_away;
+        squad.goal_conceded += match.score_home;
+        squad.goal_difference += match.score_away - match.score_home;
 
-      if (squad.goal_scored > squad.goal_conceded) {
-        squad.points += 3;
-      } else if (squad.goal_scored == squad.goal_conceded) {
-        squad.points += 1;
-      } else {
-        squad.points += 0;
+        if (match.score_away > match.score_home) {
+          squad.points += 3;
+        } else if (match.score_away === match.score_home) {
+          squad.points += 1;
+        } else {
+          squad.points += 0;
+        }
+        // Se la mia squadra corrisponde alla squadra di casa controllo i punteggi casa (home)
+      } else if (match.squad_home.id === squad.squad_id.id) {
+        squad.goal_scored += match.score_home;
+        squad.goal_conceded += match.score_away;
+        squad.goal_difference += match.score_home - match.score_away;
+
+        if (match.score_home > match.score_away) {
+          squad.points += 3;
+        } else if (match.score_home === match.score_away) {
+          squad.points += 1;
+        } else {
+          squad.points += 0;
+        }
       }
     }
   });
@@ -78,20 +104,68 @@ export const updatePoints = async (
   );
 };
 
-
+//TODO: inserire commento
 export const getGroupedData = (data: SquadGroup[], category: string) => {
   // Filtra gli oggetti in base al campo "category"
-  const groupedDataEsordienti = data.reduce<{ [key: string]: SquadGroup[] }>((acc, curr) => {
-    if (curr.squad_id.category === category) {
-      const group = curr.squad_id.group;
-      // Verifica se acc[group] è già definito, altrimenti inizializza come array vuoto
-      if (!acc[group]) {
-        acc[group] = [];
+  const groupedDataEsordienti = data.reduce<{ [key: string]: SquadGroup[] }>(
+    (acc, curr) => {
+      if (curr.squad_id.category === category) {
+        const group = curr.squad_id.group;
+        // Verifica se acc[group] è già definito, altrimenti inizializza come array vuoto
+        if (!acc[group]) {
+          acc[group] = [];
+        }
+        acc[group].push(curr);
       }
-      acc[group].push(curr);
-    }
-    return acc;
-  }, {});
-  
+      return acc;
+    },
+    {}
+  );
+
   return groupedDataEsordienti;
+};
+
+//TODO: inserire commento
+export const getBackgroundColorCard = (category: string) => {
+  switch (category.toLowerCase()) {
+    case "esordienti 2011":
+      return "bg-[#00B050]";
+    case "esordienti 2012":
+      return "bg-[#974806]";
+    case "pulcini 2013":
+      return "bg-[#FF00FF]";
+    case "pulcini 2014":
+      return "bg-[#FFC000]";
+    case "professionisti maschile":
+      return "bg-[#05A9EE]";
+    case "professionisti femminile":
+      return "bg-[#FF66CC]";
+    case "dilettanti":
+      return "bg-[#0B8640]";
+    default:
+      return "";
+  }
+};
+
+//TODO: inserire commento
+export const translateGroup = (group: string) => {
+  switch (group.toLowerCase()) {
+    case "professionisti maschile":
+      return "professional_men";
+    case "professionisti femminile":
+      return "professional_girls";
+    case "dilettanti":
+      return "amateurs";
+    default:
+      return group;
+  }
+};
+
+export const getCustomWidthTabs = (arrayCategorieslenght: number) => {
+  switch(arrayCategorieslenght){
+    case 4:
+      return "w-1/4";
+    default:
+      return "w-full";
+  }
 }
