@@ -37,9 +37,10 @@ export default function RowMatch({ matchProps }: MatchClientProps) {
             <span>⚽️</span>
             <span>{squad_home.category}</span>
           </div>
-          <span>
-            {squad_home.show_label_group ? "GIRONE " + squad_home.group : ""}
-          </span>
+          <div className="flex gap-2">
+            <span>{field}</span>
+            <span>⚽️</span>
+          </div>
         </CardTitle>
       </CardHeader>
       <div className="min-h-16 w-full flex items-center justify-between text-xs font-bold">

@@ -128,22 +128,14 @@ export const getGroupedData = (data: SquadGroup[], category: string) => {
 //TODO: inserire commento
 export const getBackgroundColorCard = (category: string) => {
   switch (category.toLowerCase()) {
-    case "esordienti 2011":
+    case "esordienti 2011-2012":
       return "bg-[#00B050]";
-    case "esordienti 2012":
-      return "bg-[#974806]";
     case "pulcini 2013":
-      return "bg-[#FF00FF]";
+      return "bg-[#00AFF0]";
     case "pulcini 2014":
       return "bg-[#FFC000]";
-    case "professionisti maschile":
-      return "bg-[#05A9EE]";
-    case "professionisti femminile":
-      return "bg-[#FF66CC]";
-    case "dilettanti":
-      return "bg-[#0B8640]";
     default:
-      return "";
+      return "bg-slate-400";
   }
 };
 
