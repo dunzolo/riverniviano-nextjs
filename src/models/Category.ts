@@ -5,7 +5,7 @@ export interface Category {
     created_at: string;
     name: string;
     description: string;
+    type: string;
     tournament_id: Tournament;
-    show_final_phase: boolean;
   }
   
