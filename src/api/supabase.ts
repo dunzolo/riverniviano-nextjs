@@ -557,3 +557,66 @@ export const updatePointsGroup = async (
     .update({ points, goal_scored, goal_conceded, goal_difference })
     .eq("id", id);
 };
+
+/**
+ * 
+ * @param id 
+ * @param group_finals 
+ */
+export const updateSquadWithGroupFinal = async (
+  id: number,
+  group_finals: string
+) => {
+  const response = await supabase
+    .from("squads")
+    .update({ group_finals })
+    .eq("id", id);
+};
+
+/**
+ * Crea una nuova partita all'interno del calendario del torneo in base al form che hai compilato
+ * @param date Giorno in cui verrà giocata la partita
+ * @param hour Orario in cui verrà giocata la partita
+ * @param selectedSquadHome ID della squadra che giocherà in casa
+ * @param selectedSquadAway ID della squadra che giocherà in trasferta
+ * @param field Campo in cui verrà giocata la partita
+ */
+export const createMatchFinalPhase = async (
+  id: number,
+  date: string,
+  hour: string,
+  selectedSquadHome: string,
+  selectedSquadAway: string,
+  tournament: number,
+  field?: string,
+  is_final_phase?: boolean
+) => {
+  const response = await supabase.from("match_final_phase").insert([
+    {
+      id: id,
+      day: date,
+      hour: hour,
+      squad_home: selectedSquadHome,
+      squad_away: selectedSquadAway,
+      field: field,
+      tournament_id: tournament,
+      is_final_phase,
+    },
+  ]);
+};
+
+export const getAllMatchFinalPhase = async (
+  slug?: string
+): Promise<MatchDatum[]> => {
+  let query = supabase
+    .from("match_final_phase")
+    .select("*, squad_home(*), squad_away(*), tournament_id!inner(*)")
+    .order("day", { ascending: true })
+    .order("hour", { ascending: true });
+
+  if (slug) query = query.eq("tournament_id.slug", slug);
+
+  const { data } = await query;
+
+  return data ?? [];
+};

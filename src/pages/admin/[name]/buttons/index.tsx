@@ -4,11 +4,12 @@ import {
   createGroup,
   getAllSquads,
   getRankingByGroup,
+  updateSquadWithGroupFinal,
 } from "../../../../api/supabase";
 import { Squad } from "@/models/Squad";
 import { handleRedirect } from "@/utils/supabase/redirect";
 import { Button } from "@/components/ui/button";
-import { FormEvent } from "react";
+import { FormEvent, useState } from "react";
 import { Heading } from "@/components/ui/heading";
 import { SquadGroup } from "@/models/SquadGroup";
 import NewMatchForm from "./getNewMatchForm";
@@ -43,52 +44,60 @@ export const getServerSideProps: GetServerSideProps = async (
 page.getLayout = (page: any) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default function page({ slug }: Props) {
-  const generateGroup = async (groups: SquadGroup[][], name: string) => {
-    //recupero la prima e la seconda classificata del primo girone
-    const first_team_first_group = parseInt(groups[0][0].squad_id.id);
-    const second_team_first_group = parseInt(groups[0][1].squad_id.id);
+  const [selectedForm, setSelectedForm] = useState("form1"); // Stato per tenere traccia del form selezionato
 
-    //recupero la prima e la seconda classificata del primo girone
-    const first_team_second_group = parseInt(groups[1][0].squad_id.id);
-    const second_team_second_group = parseInt(groups[1][1].squad_id.id);
+  const handleFormSwitch = (formName: string) => {
+    setSelectedForm(formName); // Funzione per aggiornare lo stato al click del bottone
+  };
 
+  const handleSubmitGroup2013 = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const groups = await getRankingByGroup(["C", "D"]);
+    await generateGroup(groups, "group_final_2013");
+  };
+
+  const handleSubmitGroup2014 = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const groups = await getRankingByGroup(["E", "F"]);
+    await generateGroup(groups, "group_final_2014");
+  };
+
+  const updateSquad = async (team_id: number, group_final_name: string) => {
     try {
-      await createGroup(name, first_team_first_group);
-      await createGroup(name, second_team_first_group);
-      await createGroup(name, first_team_second_group);
-      await createGroup(name, second_team_second_group);
+      await updateSquadWithGroupFinal(team_id, group_final_name);
     } catch (error: any) {
       console.log(error);
     }
   };
 
-  const handleSubmitGroup2014 = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const groups = await getRankingByGroup(["G", "H"]);
-    await generateGroup(groups, "group_final_2014");
-  };
+  const generateGroup = async (groups: SquadGroup[][], name: string) => {
+    //recupero la prima e la seconda classificata del primo girone
+    const first_team = parseInt(groups[0][0].squad_id.id);
+    const second_team = parseInt(groups[0][1].squad_id.id);
 
-  const handleSubmitGroup2013 = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const groups = await getRankingByGroup(["E", "F"]);
-    await generateGroup(groups, "group_final_2013");
+    //recupero la prima e la seconda classificata del secondo girone
+    const third_team = parseInt(groups[1][0].squad_id.id);
+    const fourth_team = parseInt(groups[1][1].squad_id.id);
+
+    try {
+      await updateSquad(first_team, name);
+      await updateSquad(second_team, name);
+      await updateSquad(third_team, name);
+      await updateSquad(fourth_team, name);
+
+      await createGroup(name, first_team);
+      await createGroup(name, second_team);
+      await createGroup(name, third_team);
+      await createGroup(name, fourth_team);
+    } catch (error: any) {
+      console.log(error);
+    }
   };
 
   return (
     <div className="container">
       <div className="grid md:grid-cols-2">
-        <div className="text-center mb-3">
-          <Heading
-            title={`Girone finale 2014`}
-            description="crea il girone finale per i 2014"
-          />
-          <form onSubmit={handleSubmitGroup2014}>
-            <Button type="submit" className="mt-1">
-              GENERA
-            </Button>
-          </form>
-        </div>
-        <div className="text-center mb-3">
+        <div className="flex items-center justify-between mb-3">
           <Heading
             title={`Girone finale 2013`}
             description="crea il girone finale per i 2013"
@@ -99,9 +108,37 @@ export default function page({ slug }: Props) {
             </Button>
           </form>
         </div>
+        <div className="flex items-center justify-between mb-3">
+          <Heading
+            title={`Girone finale 2014`}
+            description="crea il girone finale per i 2014"
+          />
+          <form onSubmit={handleSubmitGroup2014}>
+            <Button type="submit" className="mt-1">
+              GENERA
+            </Button>
+          </form>
+        </div>
       </div>
 
-      <NewMatchForm slug={slug} group={"final_2013"} />
+      <div className="grid grid-cols-2 gap-4">
+        <Button onClick={() => handleFormSwitch("form1")}>Girone 2013</Button>
+        <Button onClick={() => handleFormSwitch("form2")}>Girone 2014</Button>
+      </div>
+
+      {/* Mostra il form selezionato */}
+      {selectedForm === "form1" && (
+        <NewMatchForm slug={slug} group={"final_2013"} />
+      )}
+      {selectedForm === "form2" && (
+        <NewMatchForm slug={slug} group={"final_2014"} />
+      )}
+      {selectedForm === "form3" && (
+        <NewMatchForm slug={slug} group={"final_2015"} />
+      )}
+      {selectedForm === "form4" && (
+        <NewMatchForm slug={slug} group={"final_2016"} />
+      )}
     </div>
   );
 }
