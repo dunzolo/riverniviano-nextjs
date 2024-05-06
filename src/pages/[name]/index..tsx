@@ -88,10 +88,10 @@ export default function Home({ tournament, categories }: Props) {
                 />
                 <div>
                   <h4 className="text-base font-semibold leading-none">
-                    {category.name}
+                    {category.description}
                   </h4>
                   <p className="text-sm text-muted-foreground">
-                    {category.description}
+                    {category.type}
                   </p>
                 </div>
               </div>

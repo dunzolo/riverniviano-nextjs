@@ -158,7 +158,7 @@ export default function Home({
       </div>
 
       {filterData.map((matchesForDate, index) => (
-        <div key={index}>
+        <div key={index} className="!mt-0">
           {matchesForDate[0]?.day ? (
             <div className="sticky top-[120px] bg-white z-[1]">
               <h2 className="text-center text-sm font-bold mb-2">
