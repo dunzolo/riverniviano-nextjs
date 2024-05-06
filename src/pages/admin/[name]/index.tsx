@@ -55,52 +55,53 @@ export default function page({ groups, categories }: Props) {
     .reduce<SquadGroup[]>((acc, curr) => acc.concat(curr), []);
 
   return (
-    <ScrollArea className="h-full">
-      <div className="flex-1 space-y-4 p-4 md:p-8">
-        <div className="flex items-center justify-between space-y-2">
-          <h2 className="text-3xl font-bold tracking-tight">Classifiche</h2>
-        </div>
-        <Tabs defaultValue={categories[0]} className="space-y-4">
-          <TabsList className="w-full">
-            {categories.map((category, index) => {
-              return (
-                <TabsTrigger
-                  key={index}
-                  value={category}
-                  className={getCustomWidthTabs(categories.length)}
-                >
-                  {category}
-                </TabsTrigger>
-              );
-            })}
-          </TabsList>
-          {categories.map((category, index) => {
-            return (
-              <TabsContent key={index} value={category} className="space-y-4">
-                <div className="grid gap-4 md:grid-cols-2">
-                  {Object.entries(getGroupedData(allData, category)).map(
-                    ([group, data]) => (
-                      <Card key={group}>
-                        <CardHeader className="flex flex-row items-center justify-center space-y-0 p-2">
-                          <CardTitle className="text-sm font-medium">
-                            GIRONE {group}
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent className="p-2">
-                          <GroupClient data={data} />
-                        </CardContent>
-                        <div className="flex-1 text-sm text-muted-foreground text-center space-x-2 py-2">
-                          Classifica aggiornata
-                        </div>
-                      </Card>
-                    )
-                  )}
-                </div>
-              </TabsContent>
-            );
-          })}
-        </Tabs>
-      </div>
-    </ScrollArea>
+    <></>
+    // <ScrollArea className="h-full">
+    //   <div className="flex-1 space-y-4 p-4 md:p-8">
+    //     <div className="flex items-center justify-between space-y-2">
+    //       <h2 className="text-3xl font-bold tracking-tight">Classifiche</h2>
+    //     </div>
+    //     <Tabs defaultValue={categories[0]} className="space-y-4">
+    //       <TabsList className="w-full">
+    //         {categories.map((category, index) => {
+    //           return (
+    //             <TabsTrigger
+    //               key={index}
+    //               value={category}
+    //               className={getCustomWidthTabs(categories.length)}
+    //             >
+    //               {category}
+    //             </TabsTrigger>
+    //           );
+    //         })}
+    //       </TabsList>
+    //       {categories.map((category, index) => {
+    //         return (
+    //           <TabsContent key={index} value={category} className="space-y-4">
+    //             <div className="grid gap-4 md:grid-cols-2">
+    //               {Object.entries(getGroupedData(allData, category)).map(
+    //                 ([group, data]) => (
+    //                   <Card key={group}>
+    //                     <CardHeader className="flex flex-row items-center justify-center space-y-0 p-2">
+    //                       <CardTitle className="text-sm font-medium">
+    //                         GIRONE {group}
+    //                       </CardTitle>
+    //                     </CardHeader>
+    //                     <CardContent className="p-2">
+    //                       <GroupClient data={data} />
+    //                     </CardContent>
+    //                     <div className="flex-1 text-sm text-muted-foreground text-center space-x-2 py-2">
+    //                       Classifica aggiornata
+    //                     </div>
+    //                   </Card>
+    //                 )
+    //               )}
+    //             </div>
+    //           </TabsContent>
+    //         );
+    //       })}
+    //     </Tabs>
+    //   </div>
+    // </ScrollArea>
   );
 }

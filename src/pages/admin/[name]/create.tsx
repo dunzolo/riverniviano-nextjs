@@ -70,6 +70,7 @@ export default function Create({ categories, slug }: Props) {
   async function handleSubmitMatch(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const matches = await getAllMatch();
+    console.log(matches.length);
     const tournament = await getTournament(slug as string);
 
     const { day, hour, squad_home, squad_away, field } = form;
@@ -152,6 +153,7 @@ export default function Create({ categories, slug }: Props) {
           >
             <option value="Campo 1">Campo 1</option>
             <option value="Campo 2">Campo 2</option>
+            <option value="Campo 3">Campo 3</option>
           </select>
         </div>
 
