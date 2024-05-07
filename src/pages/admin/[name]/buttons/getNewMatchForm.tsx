@@ -131,7 +131,7 @@ const NewMatchForm: React.FC<NewMatchProps> = ({ group, slug }) => {
     <div className="pb-16">
       <h1>Accoppiamenti del Girone</h1>
       {accoppiamenti.map((partita, index) => (
-        <form onSubmit={handleSubmitMatch} className="mb-5">
+        <form onSubmit={handleSubmitMatch} className="mb-5" key={index}>
           <div key={index} className="grid sm:grid-cols-2 gap-2 mb-3">
             <div>
               <Label>Casa:</Label>

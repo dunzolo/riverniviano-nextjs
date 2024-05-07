@@ -1,5 +1,5 @@
 import { Category } from "@/models/Category";
-import { Match, MatchDatum } from "@/models/Match";
+import { Match, MatchDatum, MatchFirstGame, MatchSecondGame } from "@/models/Match";
 import { Squad } from "@/models/Squad";
 import { SquadGroup } from "@/models/SquadGroup";
 import { Tournament } from "@/models/Tournament";
@@ -605,6 +605,11 @@ export const createMatchFinalPhase = async (
   ]);
 };
 
+/**
+ * 
+ * @param slug 
+ * @returns 
+ */
 export const getAllMatchFinalPhase = async (
   slug?: string
 ): Promise<MatchDatum[]> => {
@@ -619,4 +624,49 @@ export const getAllMatchFinalPhase = async (
   const { data } = await query;
 
   return data ?? [];
+};
+
+/**
+ * 
+ * @param category 
+ * @returns 
+ */
+export const getAllMatchFirstGame = async (category: string): Promise<MatchFirstGame[]> => {
+  const response = await supabase
+    .from('games_first')
+    .select('*, squad_home!inner(*), squad_away!inner(*)')
+    .ilike("squad_home.category", `%${category}%`)
+    .order("date", { ascending: true })
+    .order("hour", { ascending: true });
+
+    return response.data ?? [];
+}
+
+/**
+ * 
+ * @param category 
+ * @returns 
+ */
+export const getAllMatchSecondGame = async (category: string): Promise<MatchSecondGame[]> => {
+  const response = await supabase
+    .from('games_second')
+    .select('*, squad!inner(*)')
+    .ilike("squad.category", `%${category}%`)
+    .order("date", { ascending: true })
+    .order("hour", { ascending: true });
+
+    return response.data ?? [];
+}
+
+/**
+ * @description Recupera le regole/info del torneo in riferimento alla categoria selezionata
+ * @param category
+ */
+export const getRulesCurrentCategory = async (category: string) => {
+  const response = await supabase
+    .from("categories")
+    .select("rules_id!inner(text)")
+    .ilike("name", `%${category}%`);
+
+  return response.data ?? [];
 };

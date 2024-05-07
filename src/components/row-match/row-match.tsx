@@ -49,8 +49,9 @@ export default function RowMatch({ matchProps }: MatchClientProps) {
             <Image
               src={squad_home.logo}
               alt={squad_home.name.toLowerCase()}
-              width={50}
-              height={50}
+              width={512}
+              height={512}
+              className="h-14 w-14"
             />
           )}
           {squad_home.name}
@@ -58,7 +59,6 @@ export default function RowMatch({ matchProps }: MatchClientProps) {
         <div className="rounded min-w-[55px] max-w-[85px] bg-white bg-opacity-50 text-center p-1">
           <span className="text-center">
             {outcome ? outcome : timeFormatHoursMinutes(hour)}
-            {/* {outcome ? outcome : "Spes Borgotrebbia d.c.r."} */}
           </span>
         </div>
         <div className="w-1/3 flex items-center justify-end">
@@ -67,8 +67,9 @@ export default function RowMatch({ matchProps }: MatchClientProps) {
             <Image
               src={squad_away.logo}
               alt={squad_away.name.toLowerCase()}
-              width={50}
-              height={50}
+              width={512}
+              height={512}
+              className="h-14 w-14"
             />
           )}
         </div>
