@@ -51,7 +51,7 @@ export default function RowMatch({ matchProps }: MatchClientProps) {
               alt={squad_home.name.toLowerCase()}
               width={512}
               height={512}
-              className="h-14 w-14"
+              className="h-12 w-12"
             />
           )}
           {squad_home.name}
@@ -69,7 +69,7 @@ export default function RowMatch({ matchProps }: MatchClientProps) {
               alt={squad_away.name.toLowerCase()}
               width={512}
               height={512}
-              className="h-14 w-14"
+              className="h-12 w-12"
             />
           )}
         </div>
