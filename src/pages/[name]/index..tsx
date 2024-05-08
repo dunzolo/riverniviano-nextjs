@@ -12,6 +12,8 @@ import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { TournamentCard } from "..";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type Props = {
   tournament: Tournament[];
@@ -44,11 +46,6 @@ Home.getLayout = (page: any) => {
 export default function Home({ tournament, categories }: Props) {
   return (
     <div className="container flex-1 space-y-4 p-4 md:p-8">
-      <h1 className="text-center text-2xl font-bold">
-        {tournament.at(0)?.name}
-      </h1>
-      <h3 className="text-center !mt-0">{tournament.at(0)?.description}</h3>
-
       <div className="mt-4">
         <Link href={`/${tournament.at(0)?.slug}/calendario`}>
           <div className="flex items-center gap-4 space-y-1">

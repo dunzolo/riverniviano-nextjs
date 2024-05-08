@@ -76,6 +76,7 @@
   }
   body {
     @apply bg-background text-foreground box-border;
+    background-color: #a4b0b849;
   }
 }
 

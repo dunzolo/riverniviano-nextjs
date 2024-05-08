@@ -19,6 +19,18 @@ export const getTournament = async (slug: string) => {
 };
 
 /**
+ * Recupera il torneo corrente
+ */
+export const getCurrentTournament = async (slug: string) => {
+  const response = await supabase
+    .from("tournaments")
+    .select("*")
+    .eq("slug", slug);
+
+  return response.data ?? [];
+};
+
+/**
  * Recupera l'elenco totale dei tornei creati dell'anno corrente
  */
 export const getAllCurrentYearTournaments = async (year: number) => {

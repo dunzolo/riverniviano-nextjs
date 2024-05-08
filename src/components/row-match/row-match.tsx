@@ -43,8 +43,8 @@ export default function RowMatch({ matchProps }: MatchClientProps) {
           </div>
         </CardTitle>
       </CardHeader>
-      <div className="min-h-16 w-full flex items-center justify-between text-xs font-bold">
-        <div className="w-1/3 flex items-center">
+      <div className="min-h-16 w-full flex items-center justify-between text-xs font-semibold">
+        <div className="w-1/2 flex items-center">
           {squad_home.logo && (
             <Image
               src={squad_home.logo}
@@ -61,7 +61,7 @@ export default function RowMatch({ matchProps }: MatchClientProps) {
             {outcome ? outcome : timeFormatHoursMinutes(hour)}
           </span>
         </div>
-        <div className="w-1/3 flex items-center justify-end">
+        <div className="w-1/2 flex items-center justify-end">
           <span className="text-end">{squad_away.name}</span>
           {squad_away.logo && (
             <Image

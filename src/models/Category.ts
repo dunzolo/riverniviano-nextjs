@@ -7,5 +7,11 @@ export interface Category {
     description: string;
     type: string;
     tournament_id: Tournament;
+    rules_id: RuleCategory;
   }
   
+  export interface RuleCategory{
+    id: string;
+    created_at: string;
+    text: string;
+  }

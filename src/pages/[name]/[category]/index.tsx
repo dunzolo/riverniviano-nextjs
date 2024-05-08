@@ -28,6 +28,7 @@ import { Category } from "@/models/Category";
 import { MatchDatum, MatchFirstGame, MatchSecondGame } from "@/models/Match";
 import { SquadGroup } from "@/models/SquadGroup";
 import { Tournament } from "@/models/Tournament";
+import { TournamentCard } from "@/pages";
 import {
   dateFormatItalian,
   getBackgroundColorCard,
@@ -105,8 +106,8 @@ export default function Home({
   const customWidthTabs =
     matchesFirstGame.length > 0 &&
     matchesSecondGame.length > 0 &&
-    category.name != "2017" &&
-    category.name != "2018"
+    category?.name != "2017" &&
+    category?.name != "2018"
       ? "w-1/4"
       : "w-1/3";
 
@@ -130,20 +131,13 @@ export default function Home({
 
   return (
     <div className="container flex-1 space-y-4 p-4 md:p-8">
-      <h1 className="text-center text-2xl font-bold">
-        {tournament.at(0)?.name}
-      </h1>
-      <h3 className="text-center !mt-0">
-        Categoria {category.name.toLowerCase()}
-      </h3>
-
       <Tabs defaultValue="partite">
-        <div className="bg-white sticky top-[56px] py-2 z-[3]">
+        <div className="bg-[#E4E8EA] sticky top-[125px] py-2 z-[3]">
           <TabsList className="w-full">
             <TabsTrigger className={customWidthTabs} value="partite">
               Partite
             </TabsTrigger>
-            {category.name != "2017" && category.name != "2018" && (
+            {category?.name != "2017" && category?.name != "2018" && (
               <TabsTrigger className={customWidthTabs} value="gironi">
                 Gironi
               </TabsTrigger>
@@ -159,7 +153,7 @@ export default function Home({
           </TabsList>
         </div>
         <TabsContent value="partite" className="!mt-0 space-y-4">
-          <div className="grid grid-cols-1 w-full items-center gap-1.5 sticky top-[100px] bg-white z-[3] py-2">
+          <div className="grid grid-cols-1 w-full items-center gap-1.5 sticky top-[170px] bg-[#E4E8EA] z-[3] py-1  [&_button]:bg-white">
             <div className="text-center">
               <Label>Nome squadra</Label>
               <Select onValueChange={handleFilterChangeSquad}>
@@ -185,14 +179,14 @@ export default function Home({
           {filterData.map((matchesForDate, index) => (
             <div key={index} className="!mt-0">
               {matchesForDate[0]?.day ? (
-                <div className="sticky !top-[175px] bg-white z-[2] py-2">
-                  <h2 className="text-center text-sm font-bold mb-2">
+                <div className="sticky !top-[235px] bg-[#E4E8EA] z-[2] py-2">
+                  <h2 className="text-center text-sm font-bold">
                     {dateFormatItalian(matchesForDate[0]?.day, options)}
                   </h2>
-                  <Separator className="h-[2px] mb-2" />
+                  <Separator className="h-[2px]" />
                 </div>
               ) : null}
-              <div className="grid gap-2 md:grid-cols-2 place-items-center">
+              <div className="grid md:grid-cols-2 place-items-center">
                 {matchesForDate.map((match) => (
                   <RowMatch key={match.id} matchProps={match} />
                 ))}
@@ -200,7 +194,7 @@ export default function Home({
             </div>
           ))}
         </TabsContent>
-        {category.name != "2017" && category.name != "2018" && (
+        {category?.name != "2017" && category?.name != "2018" && (
           <TabsContent value="gironi" className="space-y-4">
             {Object.entries(groups).map(([group, data]) => (
               <Card key={group}>
@@ -368,7 +362,7 @@ export default function Home({
           <div
             className="px-4 !mt-0 [&_ul]:list-disc [&_li]:pt-2 [&_li]:text-sm"
             dangerouslySetInnerHTML={{
-              __html: rules[0].rules_id.text,
+              __html: rules[0]?.rules_id.text,
             }}
           />
         </TabsContent>

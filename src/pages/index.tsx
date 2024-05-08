@@ -64,28 +64,41 @@ export const TournamentCard = ({ tournament }: { tournament: Tournament }) => {
 
   return (
     <Link href={generateSlug(tournament.name)}>
-      <Card className="mb-3">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-xl font-bold">{tournament.name}</CardTitle>
-        </CardHeader>
-        <CardContent className="flex justify-between">
-          <div className="text-sm font-medium">
-            <div>
-              🗓 Dal {dateFormatItalian(tournament.date_start, options)} al{" "}
-              {dateFormatItalian(tournament.date_end, options)}
+      <Card
+        className="mb-3 flex items-center text-white"
+        style={{
+          backgroundImage: "url(" + tournament.background_image + ")",
+          backgroundSize: "cover",
+          backgroundPosition: "right",
+        }}
+      >
+        <div className="w-[60%] py-4 pl-4">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 p-0">
+            <CardTitle className="text-xl font-bold">
+              {tournament.name}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex justify-between p-0">
+            <div className="text-sm font-medium">
+              <div>
+                🗓 Dal {dateFormatItalian(tournament.date_start, options)} al{" "}
+                {dateFormatItalian(tournament.date_end, options)}
+              </div>
+              <div>
+                ⚽️ {categories.length} categorie - {squads.length} squadre
+              </div>
             </div>
-            <div>
-              🏆 {categories.length} categorie - {squads.length} squadre
-            </div>
-          </div>
+          </CardContent>
+        </div>
+        <div className="p-4">
           <Image
             src={tournament.logo}
             alt="logo"
             width={512}
             height={512}
-            className="w-16 h-16"
+            className="w-24 h-24"
           />
-        </CardContent>
+        </div>
       </Card>
     </Link>
   );

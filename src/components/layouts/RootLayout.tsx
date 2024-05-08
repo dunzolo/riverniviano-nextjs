@@ -6,7 +6,7 @@ const RootLayout = ({ children }: any) => {
     <MenuContextProvider>
       <Header />
       <div className="flex h-screen">
-        <main className="w-full pt-16">{children}</main>
+        <main className="w-full pt-28">{children}</main>
       </div>
     </MenuContextProvider>
   );

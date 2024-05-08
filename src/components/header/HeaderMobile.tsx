@@ -6,6 +6,8 @@ import { MenuContextProvider, useMenuContext } from "@/contexts/menu_context";
 import { MenuIcon } from "lucide-react";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
+import { Card, CardHeader, CardTitle } from "../ui/card";
+import Image from "next/image";
 
 // import { Playlist } from "../data/playlists";
 
@@ -21,7 +23,7 @@ export function HeaderMobile({ className }: SidebarProps) {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <MenuIcon />
+        <MenuIcon className="text-white" />
       </SheetTrigger>
       <SheetContent side="left" className="!px-0">
         <div className="space-y-4 py-4">

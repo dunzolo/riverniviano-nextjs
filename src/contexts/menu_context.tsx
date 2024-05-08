@@ -1,4 +1,8 @@
-import { getAllCategories } from "@/api/supabase";
+import {
+  getAllCategories,
+  getCurrentTournament,
+  getTournament,
+} from "@/api/supabase";
 import { NavItem } from "@/types";
 import { useRouter } from "next/router";
 import {
@@ -11,12 +15,14 @@ import {
 
 interface ContextProps {
   menu_items: NavItem[];
+  current_tournament: any[];
 }
 
 const Context = createContext<ContextProps | undefined>(undefined);
 
 export const MenuContextProvider = ({ children }: { children: ReactNode }) => {
   const [data, setData] = useState<NavItem[]>([]);
+  const [tournament, setTournament] = useState<any[]>([]);
 
   const router = useRouter();
   const { name } = router.query;
@@ -38,8 +44,21 @@ export const MenuContextProvider = ({ children }: { children: ReactNode }) => {
     getData();
   }, [name]);
 
+  useEffect(() => {
+    const getTournament = async () => {
+      const tournament = await getCurrentTournament(name as string);
+      setTournament(tournament);
+    };
+
+    getTournament();
+  }, [name]);
+
   return (
-    <Context.Provider value={{ menu_items: data }}>{children}</Context.Provider>
+    <Context.Provider
+      value={{ menu_items: data, current_tournament: tournament }}
+    >
+      {children}
+    </Context.Provider>
   );
 };
 
