@@ -1,5 +1,6 @@
 import { Tournament } from "./Tournament";
 
+
 export interface Squad {
   id: string;
   logo: string;
