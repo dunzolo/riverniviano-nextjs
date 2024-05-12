@@ -18,6 +18,7 @@ export const getServerSideProps: GetServerSideProps = async (
 ) => {
   const id = context.params?.id?.toString();
   const responseRedirect = await handleRedirect(context);
+  const slug = context.params?.name?.toString();
 
   if (responseRedirect.redirect) return responseRedirect;
 
@@ -25,7 +26,7 @@ export const getServerSideProps: GetServerSideProps = async (
     return {
       props: {
         match: id ? await getMatchesById(id) : null,
-        fieldsProps: await getAllDistinctFields(),
+        fieldsProps: await getAllDistinctFields(slug as string),
         slug: context.params?.name?.toString(),
       },
     };
