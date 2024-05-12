@@ -226,6 +226,27 @@ export default function Home({
               </div>
             </div>
           ))}
+
+          <>
+            <h3 className="font-bold text-center">FASE FINALE</h3>
+            {filterDataFinalPhase.map((matchesForDate, index) => (
+              <div key={index}>
+                {matchesForDate[0]?.day ? (
+                  <div className="sticky top-[120px] bg-white z-[1]">
+                    <h2 className="text-center text-sm font-bold mb-2">
+                      {dateFormatItalian(matchesForDate[0]?.day, options)}
+                    </h2>
+                    <Separator className="h-[2px] mb-2" />
+                  </div>
+                ) : null}
+                <div className="grid gap-2 md:grid-cols-2 place-items-center">
+                  {matchesForDate.map((match) => (
+                    <RowMatch key={match.id} matchProps={match} />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </>
         </TabsContent>
         {category?.name != "2017" && category?.name != "2018" && (
           <TabsContent value="gironi" className="space-y-4">
