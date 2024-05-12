@@ -1,4 +1,5 @@
 import { Squad } from './Squad';
+import { Tournament } from './Tournament';
 export type Match = MatchDatum[]
 
 export interface MatchDatum {
@@ -12,6 +13,8 @@ export interface MatchDatum {
     outcome: string
     hour: string
     field: string
+    is_final_phase: boolean
+    tournament_id: Tournament
 }
 
 export interface MatchFirstGame {

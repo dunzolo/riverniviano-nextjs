@@ -1,9 +1,12 @@
 import {
   getAllDistinctSquads,
+  getAllMatchFinalPhaseGroupByDay,
   getAllMatchFirstGame,
   getAllMatchGroupByDay,
   getAllMatchSecondGame,
   getGroupsByCategory,
+  getGroupsByCategoryFinalPhase,
+  getRankingByFinalGroup,
   getRankingByGroup,
   getRulesCurrentCategory,
   getSingleCategory,
@@ -44,7 +47,9 @@ type Props = {
   category: Category;
   squads: string[];
   matches: { [key: string]: MatchDatum[] };
+  matches_final_phase: { [key: string]: MatchDatum[] };
   groups: SquadGroup[][];
+  groups_final_phase: SquadGroup[][];
   matchesFirstGame: MatchFirstGame[];
   matchesSecondGame: MatchSecondGame[];
   rules: any;
@@ -62,6 +67,9 @@ export const getServerSideProps: GetServerSideProps = async (
 ) => {
   const slug = context.params?.name?.toString();
   const category = context.params?.category?.toString();
+  const groupsCategoryFinalPhase = await getGroupsByCategoryFinalPhase(
+    category
+  );
 
   try {
     const groupsCategory = await getGroupsByCategory(category);
@@ -72,8 +80,16 @@ export const getServerSideProps: GetServerSideProps = async (
           slug as string,
           category as string
         ),
+        matches_final_phase: await getAllMatchFinalPhaseGroupByDay(
+          slug as string,
+          category as string,
+          true
+        ),
         category: await getSingleCategory(category as string),
         groups: await getRankingByGroup(groupsCategory),
+        groups_final_phase: groupsCategoryFinalPhase[0]
+          ? await getRankingByFinalGroup(groupsCategoryFinalPhase)
+          : null,
         squads: await getAllDistinctSquads(slug as string, category as string),
         tournament: await getTournament(slug as string),
         matchesFirstGame: await getAllMatchFirstGame(category as string),
@@ -95,14 +111,17 @@ Home.getLayout = (page: any) => {
 export default function Home({
   category,
   matches,
+  matches_final_phase,
   tournament,
   squads,
   groups,
+  groups_final_phase,
   matchesFirstGame,
   matchesSecondGame,
   rules,
 }: Props) {
   const [filterSquad, setFilterSquad] = useState("");
+
   const customWidthTabs =
     matchesFirstGame.length > 0 &&
     matchesSecondGame.length > 0 &&
@@ -127,6 +146,20 @@ export default function Home({
           .includes(filterSquad.toLowerCase()) ||
         match.squad_away.name.toLowerCase().includes(filterSquad.toLowerCase())
     )
+  );
+
+  //Filtra i dati in base al campo "name" e "category"
+  const filterDataFinalPhase = Object.entries(matches_final_phase).map(
+    ([date, matchesForDate]) =>
+      matchesForDate.filter(
+        (match) =>
+          match.squad_home.name
+            .toLowerCase()
+            .includes(filterSquad.toLowerCase()) ||
+          match.squad_away.name
+            .toLowerCase()
+            .includes(filterSquad.toLowerCase())
+      )
   );
 
   return (
@@ -218,6 +251,34 @@ export default function Home({
                 </div>
               </Card>
             ))}
+
+            {groups_final_phase && (
+              <>
+                {Object.entries(groups_final_phase).map(([group, data]) => {
+                  if (data.length > 0) {
+                    return (
+                      <Card key={group}>
+                        <CardHeader
+                          className={
+                            "flex flex-row items-center justify-center space-y-0 p-2 rounded-t-xl opacity-90 bg-[#2E3C81] text-white"
+                          }
+                        >
+                          <CardTitle className="text-sm font-medium">
+                            {"GIRONE FINALE"}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-2">
+                          <GroupClient data={data} />
+                        </CardContent>
+                        <div className="flex-1 text-sm text-muted-foreground text-center space-x-2 py-2">
+                          Classifica aggiornata
+                        </div>
+                      </Card>
+                    );
+                  }
+                })}
+              </>
+            )}
           </TabsContent>
         )}
         <TabsContent value="giochi" className="space-y-4">
