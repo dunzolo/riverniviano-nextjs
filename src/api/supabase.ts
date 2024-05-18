@@ -191,7 +191,8 @@ export const getAllMatch = async (slug?: string): Promise<MatchDatum[]> => {
   let query = supabase
     .from("match")
     .select("*, squad_home(*), squad_away(*), tournament_id!inner(*)")
-    .order("id", { ascending: true });
+    .order("day", { ascending: true })
+    .order("hour", { ascending: true })
 
   if(slug) query = query.eq("tournament_id.slug", slug);
     

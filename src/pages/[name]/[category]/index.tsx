@@ -123,8 +123,7 @@ export default function Home({
   const [filterSquad, setFilterSquad] = useState("");
 
   const customWidthTabs =
-    matchesFirstGame.length > 0 &&
-    matchesSecondGame.length > 0 &&
+    (matchesFirstGame.length > 0 || matchesSecondGame.length > 0) &&
     category?.name != "2017" &&
     category?.name != "2018"
       ? "w-1/4"
@@ -175,7 +174,7 @@ export default function Home({
                 Gironi
               </TabsTrigger>
             )}
-            {matchesFirstGame.length > 0 && (
+            {(matchesFirstGame.length > 0 || matchesSecondGame.length > 0) && (
               <TabsTrigger className={customWidthTabs} value="giochi">
                 Giochi
               </TabsTrigger>
@@ -338,7 +337,7 @@ export default function Home({
                           </div>
                           <div className="flex gap-2">
                             <span>Gioco 1</span>
-                            <span>⚽️</span>
+                            <span>🏟️</span>
                           </div>
                         </CardTitle>
                       </CardHeader>
@@ -382,8 +381,17 @@ export default function Home({
           {matchesSecondGame.length > 0 && (
             <>
               <div className="text-center">
-                <h3>GIOCO 2</h3>
-                <p>Tiro al bersaglio individuale</p>
+                <div className="flex justify-center">
+                  <Image
+                    src="/images/tiro_al_bersaglio.png"
+                    alt="tiro_al_bersaglio"
+                    width={512}
+                    height={512}
+                    className="h-52 w-52 scale-150"
+                  />
+                </div>
+                <h3 className="text-xl font-bold">GIOCO</h3>
+                <p className="font-semibold">Tiro al bersaglio individuale</p>
                 <p>
                   Ogni giocatore della squadra ha a disposizione 3 tiri da una
                   distanza pari a 7 metri alla porta (5 metri per scuola calcio)
@@ -411,9 +419,9 @@ export default function Home({
                             <span></span>
                             <span>{timeFormatHoursMinutes(hour)}</span>
                           </div>
-                          <div className="flex gap-2">
+                          <div className="flex gap-1">
                             <span>{field}</span>
-                            <span>⚽️</span>
+                            <span>🏟️</span>
                           </div>
                         </CardTitle>
                       </CardHeader>

@@ -39,7 +39,7 @@ export default function RowMatch({ matchProps }: MatchClientProps) {
           </div>
           <div className="flex gap-2">
             <span>{field}</span>
-            <span>⚽️</span>
+            <span>🏟️</span>
           </div>
         </CardTitle>
       </CardHeader>
