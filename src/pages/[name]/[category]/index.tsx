@@ -231,7 +231,7 @@ export default function Home({
             {filterDataFinalPhase.map((matchesForDate, index) => (
               <div key={index}>
                 {matchesForDate[0]?.day ? (
-                  <div className="sticky top-[120px] bg-white z-[1]">
+                  <div className="sticky top-[235px] bg-[#E4E8EA] z-[2]">
                     <h2 className="text-center text-sm font-bold mb-2">
                       {dateFormatItalian(matchesForDate[0]?.day, options)}
                     </h2>
