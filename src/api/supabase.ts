@@ -790,7 +790,7 @@ export const getRankingByFinalGroup = async (
  */
 export const getAllMatchFinalPhaseGroupByDay = async (
   slug: string,
-  category: string,
+  category?: string,
   isFinalPhase?: boolean
 ): Promise<{
   [key: string]: MatchDatum[];
@@ -801,9 +801,12 @@ export const getAllMatchFinalPhaseGroupByDay = async (
       "*, squad_home!inner(*), squad_away!inner(*), tournament_id!inner(*)"
     )
     .eq("tournament_id.slug", slug)
-    .ilike("squad_home.category", `%${category}%`)
     .order("day", { ascending: true })
     .order("hour", { ascending: true });
+
+  if(category){
+    query = query.ilike("squad_home.category", `%${category}%`);
+  }  
 
   if (isFinalPhase) {
     query = query.eq("is_final_phase", isFinalPhase);

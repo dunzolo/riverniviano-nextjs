@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { FormEvent, useState } from "react";
 import { Heading } from "@/components/ui/heading";
 import { SquadGroup } from "@/models/SquadGroup";
+import NewMatchForm from "./getNewMatchForm";
 // import NewMatchForm from "./getNewMatchForm";
 
 type Props = {
@@ -127,9 +128,9 @@ export default function Page({ slug }: Props) {
       </div>
 
       {/* Mostra il form selezionato */}
-      {/* {selectedForm === "form1" && (
+      {selectedForm === "form1" && (
         <NewMatchForm slug={slug} group={"final_2013"} />
-      )} */}
+      )}
       {/* {selectedForm === "form2" && (
         <NewMatchForm slug={slug} group={"final_2014"} />
       )} */}
